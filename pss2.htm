@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Perceived Stress Scale (PSS) Self-Assessment</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0 auto;
+      max-width: 700px;
+      padding: 20px;
+      line-height: 1.6;
+      background: #f9f9f9;
+    }
+    h1, h2 {
+      text-align: center;
+    }
+    .question {
+      margin-bottom: 15px;
+    }
+    label {
+      margin-right: 15px;
+    }
+    .score-section {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+    .explanation {
+      margin-top: 10px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background: #fff;
+    }
+    .extra-info {
+      margin-top: 15px;
+      padding: 10px;
+      background: #eaf2ff;
+      border-left: 4px solid #5c9ded;
+      border-radius: 4px;
+    }
+    .disclaimer {
+      margin-top: 20px;
+      font-size: 0.9em;
+      font-style: italic;
+      color: #666;
+    }
+    .calculate-btn {
+      display: block;
+      margin: 20px auto;
+      padding: 10px 25px;
+      background: #3498db;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .calculate-btn:hover {
+      background: #2c80ad;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Perceived Stress Scale (PSS)</h1>
+<p>
+  Please answer each of the following questions about how you have felt during the <strong>last month</strong>. 
+</p>
+<ul>
+  <li>0 = Never</li>
+  <li>1 = Almost Never</li>
+  <li>2 = Sometimes</li>
+  <li>3 = Fairly Often</li>
+  <li>4 = Very Often</li>
+</ul>
+
+<hr>
+
+<form id="stressForm">
+  <!-- 1. Upset because something happened unexpectedly? -->
+  <div class="question">
+    <p>1. In the last month, how often have you been upset because of something that happened unexpectedly?</p>
+    <label><input type="radio" name="q1" value="0">0</label>
+    <label><input type="radio" name="q1" value="1">1</label>
+    <label><input type="radio" name="q1" value="2">2</label>
+    <label><input type="radio" name="q1" value="3">3</label>
+    <label><input type="radio" name="q1" value="4">4</label>
+  </div>
+
+  <!-- 2. Felt unable to control important things in life? -->
+  <div class="question">
+    <p>2. In the last month, how often have you felt that you were unable to control the important things in your life?</p>
+    <label><input type="radio" name="q2" value="0">0</label>
+    <label><input type="radio" name="q2" value="1">1</label>
+    <label><input type="radio" name="q2" value="2">2</label>
+    <label><input type="radio" name="q2" value="3">3</label>
+    <label><input type="radio" name="q2" value="4">4</label>
+  </div>
+
+  <!-- 3. Felt nervous and stressed? -->
+  <div class="question">
+    <p>3. In the last month, how often have you felt nervous and stressed?</p>
+    <label><input type="radio" name="q3" value="0">0</label>
+    <label><input type="radio" name="q3" value="1">1</label>
+    <label><input type="radio" name="q3" value="2">2</label>
+    <label><input type="radio" name="q3" value="3">3</label>
+    <label><input type="radio" name="q3" value="4">4</label>
+  </div>
+
+  <!-- 4. Felt confident about ability to handle personal problems? [REVERSE SCORED] -->
+  <div class="question">
+    <p>4. In the last month, how often have you felt confident about your ability to handle your personal problems?</p>
+    <label><input type="radio" name="q4" value="0">0</label>
+    <label><input type="radio" name="q4" value="1">1</label>
+    <label><input type="radio" name="q4" value="2">2</label>
+    <label><input type="radio" name="q4" value="3">3</label>
+    <label><input type="radio" name="q4" value="4">4</label>
+  </div>
+
+  <!-- 5. Felt things were going your way? [REVERSE SCORED] -->
+  <div class="question">
+    <p>5. In the last month, how often have you felt that things were going your way?</p>
+    <label><input type="radio" name="q5" value="0">0</label>
+    <label><input type="radio" name="q5" value="1">1</label>
+    <label><input type="radio" name="q5" value="2">2</label>
+    <label><input type="radio" name="q5" value="3">3</label>
+    <label><input type="radio" name="q5" value="4">4</label>
+  </div>
+
+  <!-- 6. Found you could not cope with all things you had to do? -->
+  <div class="question">
+    <p>6. In the last month, how often have you found that you could not cope with all the things that you had to do?</p>
+    <label><input type="radio" name="q6" value="0">0</label>
+    <label><input type="radio" name="q6" value="1">1</label>
+    <label><input type="radio" name="q6" value="2">2</label>
+    <label><input type="radio" name="q6" value="3">3</label>
+    <label><input type="radio" name="q6" value="4">4</label>
+  </div>
+
+  <!-- 7. Been able to control irritations in your life? [REVERSE SCORED] -->
+  <div class="question">
+    <p>7. In the last month, how often have you been able to control irritations in your life?</p>
+    <label><input type="radio" name="q7" value="0">0</label>
+    <label><input type="radio" name="q7" value="1">1</label>
+    <label><input type="radio" name="q7" value="2">2</label>
+    <label><input type="radio" name="q7" value="3">3</label>
+    <label><input type="radio" name="q7" value="4">4</label>
+  </div>
+
+  <!-- 8. Felt you were on top of things? [REVERSE SCORED] -->
+  <div class="question">
+    <p>8. In the last month, how often have you felt that you were on top of things?</p>
+    <label><input type="radio" name="q8" value="0">0</label>
+    <label><input type="radio" name="q8" value="1">1</label>
+    <label><input type="radio" name="q8" value="2">2</label>
+    <label><input type="radio" name="q8" value="3">3</label>
+    <label><input type="radio" name="q8" value="4">4</label>
+  </div>
+
+  <!-- 9. Been angered because of things that were out of your control? -->
+  <div class="question">
+    <p>9. In the last month, how often have you been angered because of things that were outside of your control?</p>
+    <label><input type="radio" name="q9" value="0">0</label>
+    <label><input type="radio" name="q9" value="1">1</label>
+    <label><input type="radio" name="q9" value="2">2</label>
+    <label><input type="radio" name="q9" value="3">3</label>
+    <label><input type="radio" name="q9" value="4">4</label>
+  </div>
+
+  <!-- 10. Felt difficulties were piling up so high that you could not overcome them? -->
+  <div class="question">
+    <p>10. In the last month, how often have you felt difficulties were piling up so high that you could not overcome them?</p>
+    <label><input type="radio" name="q10" value="0">0</label>
+    <label><input type="radio" name="q10" value="1">1</label>
+    <label><input type="radio" name="q10" value="2">2</label>
+    <label><input type="radio" name="q10" value="3">3</label>
+    <label><input type="radio" name="q10" value="4">4</label>
+  </div>
+
+  <button type="button" class="calculate-btn" onclick="calculateScore()">Calculate Score</button>
+</form>
+
+<div class="score-section" id="scoreDisplay" style="display:none;">
+  Your total PSS score is: <span id="totalScore"></span>
+</div>
+
+<div class="explanation" id="scoreExplanation" style="display:none;"></div>
+
+<div class="extra-info" id="extraInfo" style="display:none;">
+  <strong>Additional Information:</strong><br><br>
+  Referring to findings from a recent Hong Kong study, the average PSS score 
+  of participants (mostly 18–29 years old) was about <strong>19.02</strong>. 
+  Meanwhile, a commonly cited standard average is around <strong>14.2</strong> (with SD = 6.2).
+  <br><br>
+  Compare your own score (<span id="studentScorePlaceholder"></span>) with these values to get
+  a rough idea of how it relates to those groups.
+</div>
+
+<div class="disclaimer">
+  <strong>Disclaimer:</strong> This self-assessment is only a snapshot of perceived stress. 
+  It does not reflect any particular diagnosis or course of treatment. If you have 
+  concerns about your mental wellbeing, please consider contacting a healthcare professional.
+</div>
+
+<script>
+  function calculateScore() {
+    // Gather answers
+    const form = document.getElementById('stressForm');
+    const answers = {};
+    for (let i = 1; i <= 10; i++) {
+      const questionName = 'q' + i;
+      const selected = form.elements[questionName].value;
+      answers[questionName] = selected ? parseInt(selected, 10) : null;
+    }
+
+    // Check if all questions are answered
+    for (let key in answers) {
+      if (answers[key] === null) {
+        alert('Please answer all questions before calculating your score.');
+        return;
+      }
+    }
+
+    // Reverse scores for questions 4, 5, 7, 8
+    // Reversed scoring: 0->4, 1->3, 2->2, 3->1, 4->0
+    function reverseScore(val) {
+      return 4 - val;
+    }
+    const reverseQuestions = ['q4','q5','q7','q8'];
+
+    // Calculate total
+    let totalScore = 0;
+    for (let i = 1; i <= 10; i++) {
+      const questionName = 'q' + i;
+      let value = answers[questionName];
+      if (reverseQuestions.includes(questionName)) {
+        value = reverseScore(value);
+      }
+      totalScore += value;
+    }
+
+    // Display the total
+    document.getElementById('totalScore').innerText = totalScore;
+    document.getElementById('scoreDisplay').style.display = 'block';
+
+    // Provide explanation
+    let explanation = '';
+    if (totalScore <= 13) {
+      explanation = 'Your perceived stress level is considered LOW (0–13).';
+    } else if (totalScore <= 26) {
+      explanation = 'Your perceived stress level is considered MODERATE (14–26).';
+    } else {
+      explanation = 'Your perceived stress level is considered HIGH (27–40).';
+    }
+    document.getElementById('scoreExplanation').innerText = explanation;
+    document.getElementById('scoreExplanation').style.display = 'block';
+
+    // Show additional info
+    document.getElementById('studentScorePlaceholder').innerText = totalScore;
+    document.getElementById('extraInfo').style.display = 'block';
+  }
+</script>
+
+</body>
+</html>
