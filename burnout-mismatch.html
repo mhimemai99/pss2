@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Work Mismatch Assessment</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            line-height: 1.6;
+            padding: 16px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .intro {
+            background: #f3f4f6;
+            padding: 16px;
+            margin-bottom: 24px;
+            border-radius: 8px;
+        }
+        .category {
+            background: #e5e7eb;
+            padding: 8px;
+            margin: 16px 0 8px 0;
+            font-weight: bold;
+        }
+        .question {
+            background: #fff;
+            padding: 16px;
+            margin-bottom: 8px;
+            border: 1px solid #e5e7eb;
+        }
+        .options {
+            display: flex;
+            gap: 12px;
+            margin-top: 8px;
+        }
+        .option {
+            flex: 1;
+            text-align: center;
+        }
+        button {
+            background: #2563eb;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 20px 0;
+        }
+        button:hover { background: #1d4ed8; }
+        .results {
+            margin-top: 24px;
+            display: none;
+        }
+        .result-summary {
+            padding: 16px;
+            margin-top: 16px;
+            border-radius: 8px;
+            background: #f3f4f6;
+        }
+        .good { color: #059669; }
+        .warning { color: #d97706; }
+        .danger { color: #dc2626; }
+    </style>
+</head>
+<body>
+    <h1>Quick Work Mismatch Assessment</h1>
+    <div class="intro">
+        <p>For each item, rate how your current work matches up with your personal preferences, work patterns, and aspirations.</p>
+    </div>
+    <form id="mismatchForm">
+        <div id="questions"></div>
+        <button type="submit">Analyze Results</button>
+    </form>
+    <div id="results" class="results"></div>
+
+    <script>
+        const categories = {
+            'Workload': [
+                'The amount of work to complete in a day',
+                'The frequency of surprising, unexpected events'
+            ],
+            'Control': [
+                'My participation in decisions that affect my work',
+                'The quality of leadership from upper management'
+            ],
+            'Reward': [
+                'Recognition for achievements from my supervisor',
+                'Opportunities for bonuses or raises'
+            ],
+            'Community': [
+                'The frequency of supportive interactions at work',
+                'The closeness of personal friendships at work'
+            ],
+            'Fairness': [
+                'Management\'s dedication to giving everyone equal consideration',
+                'Clear and open procedures for allocating rewards and promotions'
+            ],
+            'Values': [
+                'The potential of my work to contribute to the larger community',
+                'My confidence that the organization\'s mission is meaningful'
+            ]
+        };
+
+        const questionsContainer = document.getElementById('questions');
+        Object.entries(categories).forEach(([category, questions]) => {
+            const categoryDiv = document.createElement('div');
+            categoryDiv.className = 'category';
+            categoryDiv.textContent = category;
+            questionsContainer.appendChild(categoryDiv);
+
+            questions.forEach((q, idx) => {
+                const div = document.createElement('div');
+                div.className = 'question';
+                div.innerHTML = `
+                    <div>${q}</div>
+                    <div class="options">
+                        <label class="option">
+                            <input type="radio" name="${category}_${idx}" value="0" required>
+                            Just Right
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="${category}_${idx}" value="1" required>
+                            Mismatch
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="${category}_${idx}" value="2" required>
+                            Major Mismatch
+                        </label>
+                    </div>
+                `;
+                questionsContainer.appendChild(div);
+            });
+        });
+
+        document.getElementById('mismatchForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            let totalScore = 0;
+            const categoryScores = {};
+
+            Object.keys(categories).forEach(category => {
+                const scores = [0, 1].map(idx => 
+                    parseInt(document.querySelector(`input[name="${category}_${idx}"]:checked`).value)
+                );
+                categoryScores[category] = scores.reduce((a, b) => a + b, 0);
+                totalScore += categoryScores[category];
+            });
+
+            const maxPossibleScore = Object.keys(categories).length * 2 * 2; // categories * questions * max score
+            const mismatchPercentage = (totalScore / maxPossibleScore) * 100;
+
+            const getAssessment = (score) => {
+                if (score < 30) return ['Excellent Match', 'good'];
+                if (score < 60) return ['Moderate Mismatch', 'warning'];
+                return ['Significant Mismatch', 'danger'];
+            };
+
+            const [assessment, className] = getAssessment(mismatchPercentage);
+
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.style.display = 'block';
+            resultsDiv.innerHTML = `
+                <div class="result-summary">
+                    <h2 class="${className}">Overall Assessment: ${assessment}</h2>
+                    <p>Mismatch Score: ${mismatchPercentage.toFixed(1)}%</p>
+                    <hr style="margin: 16px 0">
+                    <h3>Areas to Consider:</h3>
+                    ${Object.entries(categoryScores)
+                        .filter(([_, score]) => score > 2)
+                        .map(([category, score]) => 
+                            `<p>• ${category}: ${score === 4 ? 'Major' : 'Moderate'} mismatch area</p>`
+                        ).join('')}
+                    <hr style="margin: 16px 0">
+                    <p><strong>Key:</strong></p>
+                    <p>• A perfect or near-perfect match suggests an excellent setting for your work</p>
+                    <p>• A few mismatches are normal and usually manageable</p>
+                    <p>• Multiple major mismatches may indicate areas needing attention</p>
+                </div>
+            `;
+        });
+    </script>
+</body>
+</html>
