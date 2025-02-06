@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Burnout Assessment</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            line-height: 1.6;
+            padding: 16px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .question {
+            background: #f5f5f5;
+            padding: 16px;
+            margin-bottom: 16px;
+            border-radius: 8px;
+        }
+        .options {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+        .option {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        button {
+            background: #2563eb;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 20px 0;
+        }
+        button:hover { background: #1d4ed8; }
+        .results {
+            margin-top: 24px;
+            display: none;
+        }
+        .result-card {
+            padding: 16px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+        }
+        .low { background: #bbf7d0; }
+        .moderate { background: #fef08a; }
+        .high { background: #fecaca; }
+        h1 { margin-bottom: 24px; }
+        @media (max-width: 600px) {
+            .options { 
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+            .option {
+                width: calc(25% - 9px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Burnout Assessment</h1>
+    <form id="burnoutForm">
+        <div id="questions"></div>
+        <button type="submit">Calculate Results</button>
+    </form>
+    <div id="results" class="results"></div>
+
+    <script>
+        const questions = [
+            "I feel emotionally exhausted because of my work",
+            "I feel worn out at the end of a working day",
+            "I feel tired as soon as I get up in the morning and see a new working day stretched out in front of me",
+            "I can easily understand the actions of my colleagues/supervisors",
+            "I get the feeling that I treat some clients/colleagues impersonally, as if they were objects",
+            "Working with people the whole day is stressful for me",
+            "I deal with other people's problems successfully",
+            "I feel burned out because of my work",
+            "I feel that I influence other people positively through my work",
+            "I have become more callous to people since I have started doing this job",
+            "I'm afraid that my work makes me emotionally harder",
+            "I feel full of energy",
+            "I feel frustrated by my work",
+            "I get the feeling that I work too hard",
+            "I'm not really interested in what is going on with many of my colleagues",
+            "Being in direct contact with people at work is too stressful",
+            "I find it easy to build a relaxed atmosphere in my working environment",
+            "I feel stimulated when I been working closely with my colleagues",
+            "I have achieved many rewarding objectives in my work",
+            "I feel as if I'm at my wits' end",
+            "In my work I am very relaxed when dealing with emotional problems",
+            "I have the feeling that my colleagues blame me for some of their problems"
+        ];
+
+        const questionsContainer = document.getElementById('questions');
+        questions.forEach((q, idx) => {
+            const div = document.createElement('div');
+            div.className = 'question';
+            div.innerHTML = `
+                <div>${idx + 1}. ${q}</div>
+                <div class="options">
+                    ${[0,1,2,3,4,5,6].map(value => `
+                        <label class="option">
+                            <input type="radio" name="q${idx}" value="${value}" required>
+                            ${value}
+                        </label>
+                    `).join('')}
+                </div>
+            `;
+            questionsContainer.appendChild(div);
+        });
+
+        document.getElementById('burnoutForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const answers = questions.map((_, idx) => 
+                parseInt(document.querySelector(`input[name="q${idx}"]:checked`).value)
+            );
+
+            const ee = [0,1,2,5,7,12,13,15,19].reduce((sum, q) => sum + answers[q], 0);
+            const dp = [4,9,10,14,21].reduce((sum, q) => sum + answers[q], 0);
+            const pa = [3,6,8,11,16,17,18,20].reduce((sum, q) => sum + answers[q], 0);
+
+            const getLevel = (score, ranges) => {
+                if (score < ranges[0]) return 'low';
+                if (score <= ranges[1]) return 'moderate';
+                return 'high';
+            };
+
+            const results = [
+                {
+                    name: 'Occupational Exhaustion',
+                    score: ee,
+                    level: getLevel(ee, [17, 29]),
+                    inverse: false
+                },
+                {
+                    name: 'Depersonalisation',
+                    score: dp,
+                    level: getLevel(dp, [5, 11]),
+                    inverse: false
+                },
+                {
+                    name: 'Personal Accomplishment',
+                    score: pa,
+                    level: getLevel(pa, [33, 39]),
+                    inverse: true
+                }
+            ];
+
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.style.display = 'block';
+            resultsDiv.innerHTML = results.map(r => `
+                <div class="result-card ${r.inverse ? 
+                    (r.level === 'high' ? 'low' : r.level === 'low' ? 'high' : 'moderate') : 
+                    r.level}">
+                    <h3>${r.name}</h3>
+                    <p>Score: ${r.score}</p>
+                    <p>Level: ${r.level.charAt(0).toUpperCase() + r.level.slice(1)} degree</p>
+                </div>
+            `).join('');
+        });
+    </script>
+</body>
+</html>
