@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stress and Coping Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 90%;
+            margin: 0 auto;
+            padding: 2vw;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+        h1 {
+            font-size: 1.8em;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .question {
+            margin-bottom: 20px;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        .options {
+            margin-left: 15px;
+        }
+        input[type="radio"] {
+            margin: 10px 5px;
+            transform: scale(1.2);
+        }
+        button {
+            display: block;
+            width: 100%;
+            max-width: 200px;
+            margin: 20px auto;
+            padding: 10px;
+            font-size: 1em;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #results {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ccc;
+            display: none;
+            font-size: 0.9em;
+        }
+        .correct { color: green; font-weight: bold; }
+        .incorrect { color: red; font-weight: bold; }
+
+        @media (max-width: 600px) {
+            body {
+                font-size: 14px;
+                padding: 10px;
+            }
+            h1 {
+                font-size: 1.5em;
+            }
+            .question {
+                padding: 8px;
+            }
+            input[type="radio"] {
+                margin: 8px 4px;
+            }
+            button {
+                padding: 8px;
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Stress and Coping Quiz</h1>
+    <form id="quizForm">
+        <div class="question">
+            <p><strong>Q1. What is the primary difference between eustress and distress as described in the lecture?</strong></p>
+            <div class="options">
+                <input type="radio" name="q1" value="a"> a. Eustress always improves performance, while distress causes only physical harm.<br>
+                <input type="radio" name="q1" value="b"> b. Eustress occurs only in academic settings, while distress is limited to personal challenges.<br>
+                <input type="radio" name="q1" value="c"> c. There is no difference; both are negative responses to stressors.<br>
+                <input type="radio" name="q1" value="d"> d. None of the above.<br>
+            </div>
+        </div>
+
+        <div class="question">
+            <p><strong>Q2. Which statement best describes the mind-body connection in the context of stress, as presented in the lecture?</strong></p>
+            <div class="options">
+                <input type="radio" name="q2" value="a"> a. Physical responses to stress occur independently of our thoughts and emotions.<br>
+                <input type="radio" name="q2" value="b"> b. Emotions and thoughts influence physical responses, but not vice versa.<br>
+                <input type="radio" name="q2" value="c"> c. Thoughts and emotions can affect overall health by influencing physiological responses.<br>
+                <input type="radio" name="q2" value="d"> d. Physical stressors (e.g., threats) contribute more to the stress response than mental factors.<br>
+            </div>
+        </div>
+
+        <div class="question">
+            <p><strong>Q3. Which of the following is an early sign of emotional exhaustion in burnout?</strong></p>
+            <div class="options">
+                <input type="radio" name="q3" value="a"> a. Feeling slightly energized and motivated after work.<br>
+                <input type="radio" name="q3" value="b"> b. Chronic fatigue and persistent difficulties in sleeping.<br>
+                <input type="radio" name="q3" value="c"> c. Slightly increased focus, creativity, and productivity.<br>
+                <input type="radio" name="q3" value="d"> d. Looking for more connection with family and friends.<br>
+            </div>
+        </div>
+
+        <div class="question">
+            <p><strong>Q4. According to the lecture, how does effective perception management increase one’s tolerance for stress?</strong></p>
+            <div class="options">
+                <input type="radio" name="q4" value="a"> a. By eliminating the stressor from one’s environment.<br>
+                <input type="radio" name="q4" value="b"> b. By altering one’s interpretation of stressors so they are seen as less threatening.<br>
+                <input type="radio" name="q4" value="c"> c. By intensifying the body’s physiological response to prepare for danger.<br>
+                <input type="radio" name="q4" value="d"> d. By suppressing all emotional responses to stressful events.<br>
+            </div>
+        </div>
+
+        <div class="question">
+            <p><strong>Q5. According to the lecture, what is the primary objective of problem-focused coping strategies?</strong></p>
+            <div class="options">
+                <input type="radio" name="q5" value="a"> a. To alleviate distress from all possible angles.<br>
+                <input type="radio" name="q5" value="b"> b. To generate practical solutions that reduce or eliminate the source of stress.<br>
+                <input type="radio" name="q5" value="c"> c. To minimize awareness of stress by practically diverting attention.<br>
+                <input type="radio" name="q5" value="d"> d. To reframe the stressor in a more positive light.<br>
+            </div>
+        </div>
+
+        <button type="button" onclick="submitQuiz()">Submit Answers</button>
+    </form>
+
+    <div id="results"></div>
+
+    <script>
+        function submitQuiz() {
+            const answers = {
+                q1: 'd',
+                q2: 'c',
+                q3: 'b',
+                q4: 'b',
+                q5: 'b'
+            };
+            const explanations = {
+                q1: 'The lecture distinguishes between eustress and distress by noting that eustress is a positive, motivating form of stress, while distress is negative and overwhelming. None of the provided options (a–c) fully capture this distinction, so "None of the above" is the correct answer.',
+                q2: 'The lecture explains that our thoughts and emotions significantly influence our physiological responses, emphasizing the interconnection of mind and body in the stress process.',
+                q3: 'Early signs of emotional exhaustion include chronic fatigue and persistent difficulties in sleeping, indicating that the individual is running out of energy to cope with stress.',
+                q4: 'The lecture explains that effective perception management involves reinterpreting stressors so that they are seen as less threatening. This shift in appraisal increases an individual’s tolerance for stress.',
+                q5: 'Problem-focused coping is aimed at addressing the source of stress directly by generating practical solutions that reduce or eliminate the stressor.'
+            };
+
+            let score = 0;
+            let resultHTML = '<h2>Results</h2>';
+
+            for (let i = 1; i <= 5; i++) {
+                const userAnswer = document.querySelector(`input[name="q${i}"]:checked`);
+                const correctAnswer = answers[`q${i}`];
+                const questionText = document.querySelector(`#quizForm .question:nth-child(${i}) p`).textContent;
+
+                resultHTML += `<p><strong>${questionText}</strong><br>`;
+                if (userAnswer && userAnswer.value === correctAnswer) {
+                    score++;
+                    resultHTML += `<span class="correct">Correct!</span> `;
+                } else {
+                    resultHTML += `<span class="incorrect">Incorrect.</span> Correct answer: ${correctAnswer}. `;
+                }
+                resultHTML += `Explanation: ${explanations[`q${i}`]}</p>`;
+            }
+
+            resultHTML += `<h3>Your Score: ${score}/5 (${(score / 5) * 100}%)</h3>`;
+            document.getElementById('results').innerHTML = resultHTML;
+            document.getElementById('results').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
