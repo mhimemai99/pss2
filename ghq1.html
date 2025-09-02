@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>Happiness Quick Check (CLE9032)</title>
+  <meta name="description" content="A quick 12‑item happiness check for CLE9032 students.">
+  <style>
+    :root{
+      --bg:#0f1115; --card:#151923; --muted:#a9b3c9; --text:#e6e9ef; --accent:#7c9cff; --good:#39d98a; --warn:#ffcc66; --bad:#ff6b6b;
+      --ring: 0 0 0 2px var(--accent) inset;
+    }
+    @media (prefers-color-scheme: light){
+      :root{ --bg:#f6f7fb; --card:#ffffff; --muted:#4d5566; --text:#1e2330; --accent:#395dff; --good:#199861; --warn:#b57a00; --bad:#d12f2f;}
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font:16px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji";
+      background:radial-gradient(1200px 600px at 70% -10%, rgba(124,156,255,0.15), transparent 60%),
+                 radial-gradient(1000px 600px at -10% 10%, rgba(57,93,255,0.12), transparent 55%), var(--bg);
+      color:var(--text);
+    }
+    .wrap{max-width:840px; margin:auto; padding:24px clamp(16px,4vw,28px) 80px;}
+    header{
+      position:sticky; top:0; z-index:5; backdrop-filter:saturate(120%) blur(6px);
+      background:linear-gradient(180deg, rgba(21,25,35,.95), rgba(21,25,35,.85)), transparent;
+      border-bottom:1px solid rgba(124,156,255,.15);
+      padding:.85rem clamp(16px,4vw,28px); margin:0 -1rem 1.25rem; border-radius:0 0 14px 14px;
+    }
+    @media (prefers-color-scheme:light){
+      header{ background:linear-gradient(180deg, rgba(255,255,255,.9), rgba(255,255,255,.75)); border-bottom:1px solid rgba(57,93,255,.15);}
+    }
+    h1{font-size:1.25rem; margin:.1rem 0 .35rem 0; letter-spacing:.2px}
+    .sub{font-size:.92rem; color:var(--muted)}
+    .card{
+      background:var(--card); border:1px solid rgba(124,156,255,.14); border-radius:14px; padding:18px 16px; margin:16px 0;
+      box-shadow:0 10px 30px rgba(0,0,0,.15);
+    }
+    .intro{font-size:.98rem; color:var(--muted); margin-top:4px}
+    .scale-legend{display:flex; gap:8px; align-items:center; color:var(--muted); font-size:.9rem; margin:8px 2px}
+    .legend-pill{border:1px solid rgba(124,156,255,.25); border-radius:999px; padding:6px 10px}
+    form{margin:0}
+    fieldset{
+      border:0; margin:0; padding:14px 12px 10px; border-radius:12px; position:relative;
+      transition:background .2s ease;
+    }
+    fieldset:hover{background:rgba(124,156,255,.06)}
+    legend{font-weight:600; padding:0 0 10px 0; width:100%; font-size:1rem}
+    .options{
+      display:grid; grid-template-columns: repeat(6, minmax(40px,1fr)); gap:8px; width:100%;
+    }
+    @media (max-width:560px){ .options{grid-template-columns: repeat(3, minmax(70px,1fr));} }
+    .opt{
+      position:relative; display:flex; align-items:center; justify-content:center; border-radius:11px; cursor:pointer;
+      border:1px solid rgba(124,156,255,.28); padding:12px 6px; user-select:none; transition:transform .02s ease, border-color .15s ease, background .15s;
+      background:linear-gradient(180deg, rgba(255,255,255,.04), transparent);
+      font-weight:600;
+    }
+    input[type=radio]{position:absolute; inset:0; opacity:0; pointer-events:none}
+    input[type=radio]:focus-visible + .opt{box-shadow:var(--ring)}
+    input[type=radio]:checked + .opt{ border-color:var(--accent); background:linear-gradient(180deg, rgba(124,156,255,.18), rgba(124,156,255,.08)); }
+    .opt small{display:block; font-weight:600; opacity:.9}
+    .opt span{display:block; font-size:.7rem; opacity:.7; margin-top:2px}
+    .progress{
+      display:flex; align-items:center; justify-content:space-between; gap:12px; margin:12px 0 2px;
+      font-size:.95rem; color:var(--muted)
+    }
+    progress{ width:100%; height:12px; -webkit-appearance:none; appearance:none;}
+    progress::-webkit-progress-bar{background:rgba(124,156,255,.15); border-radius:999px}
+    progress::-webkit-progress-value{background:var(--accent); border-radius:999px}
+    progress::-moz-progress-bar{background:var(--accent); border-radius:999px}
+    .actions{
+      position:sticky; bottom:0; z-index:4; margin:24px -1rem 0; padding:14px clamp(16px,4vw,28px);
+      background:linear-gradient(180deg, rgba(21,25,35,.02), rgba(21,25,35,.45) 45%, rgba(21,25,35,.85) 85%),
+                 linear-gradient(180deg, rgba(0,0,0,0), var(--bg));
+      display:flex; gap:10px; border-top:1px solid rgba(124,156,255,.12);
+    }
+    @media (prefers-color-scheme:light){ .actions{ background:linear-gradient(180deg, rgba(255,255,255,0), rgba(255,255,255,.95)); border-top:1px solid rgba(57,93,255,.12); } }
+    button{
+      appearance:none; border:0; border-radius:12px; padding:12px 16px; font-weight:700; cursor:pointer;
+      background:var(--accent); color:white; min-width:120px; letter-spacing:.3px; transition:transform .02s ease, opacity .2s ease;
+    }
+    button[disabled]{opacity:.5; cursor:not-allowed}
+    .btn-secondary{ background:transparent; color:var(--text); border:1px solid rgba(124,156,255,.35)}
+    .result{
+      margin:14px 0 0; padding:18px; border-radius:14px; border:1px solid rgba(124,156,255,.2); background:linear-gradient(180deg, rgba(124,156,255,.1), transparent 58%), var(--card);
+    }
+    .score{ font-size:2.2rem; font-weight:800; letter-spacing:.2px; margin:0 0 .25rem 0 }
+    .band{ font-weight:800; margin:.15rem 0 .4rem 0 }
+    .desc{ color:var(--muted); margin:0 }
+    .pill{ display:inline-block; border:1px solid rgba(124,156,255,.3); border-radius:999px; padding:4px 10px; font-size:.82rem; margin-right:8px; }
+    .bad{ border-color:rgba(255,107,107,.4); color:var(--bad)} .warn{ border-color:rgba(255,204,102,.45); color:var(--warn)} .good{ border-color:rgba(57,217,138,.4); color:var(--good)}
+    .tools{ display:flex; gap:8px; margin-top:12px; }
+    .foot{ color:var(--muted); font-size:.82rem; margin:16px 4px 0 }
+    .tiny{font-size:.78rem; color:var(--muted)}
+    .brand{ font-weight:800; letter-spacing:.2px}
+    .muted{ color:var(--muted) }
+    .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">CLE9032 · Emotional Happiness</div>
+    <h1>Happiness Quick Check</h1>
+    <div class="sub">A 12‑item class activity (1–2 minutes). Tap once per statement.</div>
+  </header>
+
+  <div class="wrap">
+    <section class="card">
+      <div class="intro">
+        Rate each statement from <strong>1 (Strongly disagree)</strong> to <strong>6 (Strongly agree)</strong>.
+        Your score is the <em>average</em> of all items (out of 6).
+        <span class="tiny">This is a brief class check‑in, not a diagnosis.</span>
+      </div>
+      <div class="scale-legend">
+        <div class="legend-pill">1 — Strongly disagree</div>
+        <div class="legend-pill">3 — Slightly disagree</div>
+        <div class="legend-pill">4 — Slightly agree</div>
+        <div class="legend-pill">6 — Strongly agree</div>
+      </div>
+
+      <form id="quiz" novalidate></form>
+
+      <div class="progress">
+        <div><span id="answered">0</span>/<span id="total">12</span> answered</div>
+        <progress id="bar" max="12" value="0" aria-label="progress"></progress>
+      </div>
+    </section>
+
+    <section id="result" class="result" hidden aria-live="polite" aria-atomic="true"></section>
+
+    <p class="foot">
+      <span class="mono">Cut‑offs</span> for the brief interpretation follow the OHQ bands you show in your slide
+      “How Happy are You?” (1–2 not happy · 2–3 somewhat unhappy · 3–4 neutral · 4 somewhat/moderately happy ·
+      4–5 rather happy · 5–6 very happy · 6 possibly “too happy”). Source: your Lecture‑1 deck, p. 6. 
+    </p>
+    <p class="tiny">Privacy: results stay on your device. If you tap “Copy summary”, you can paste the score into a form if your instructor asks.</p>
+  </div>
+
+  <div class="actions">
+    <button class="btn-secondary" type="button" id="resetBtn">Reset</button>
+    <button id="submitBtn" disabled>See my score</button>
+  </div>
+
+<script>
+/* CLE9032 Happiness Quick Check
+   — 12 statements; 1–6 scale; some items are reverse-scored (R).
+   — Score = average (out of 6). Interpretation bands mirror the OHQ bands used in class slides.
+   — You may replace the items[] text with the full OHQ later if you have permission.
+*/
+const items = [
+  { text: "I feel cheerful and in good spirits most days.", reverse:false },
+  { text: "I have warm and trusting relationships.", reverse:false },
+  { text: "I wake up feeling fresh and rested.", reverse:false },
+  { text: "I often feel that life is rewarding.", reverse:false },
+  { text: "I feel that I have a sense of purpose.", reverse:false },
+  { text: "I frequently feel anxious or down without clear reason.", reverse:true },   // (R)
+  { text: "I can laugh and see the funny side of things.", reverse:false },
+  { text: "I am satisfied with how my life is going.", reverse:false },
+  { text: "I feel in control of the way my life is going.", reverse:false },
+  { text: "I have the energy to do what I need to do.", reverse:false },
+  { text: "I often feel isolated from others.", reverse:true },                         // (R)
+  { text: "I tend to dwell on what is going wrong.", reverse:true }                     // (R)
+];
+
+const form = document.getElementById('quiz');
+const totalEl = document.getElementById('total');
+const answeredEl = document.getElementById('answered');
+const bar = document.getElementById('bar');
+const submitBtn = document.getElementById('submitBtn');
+const resetBtn = document.getElementById('resetBtn');
+const resultBox = document.getElementById('result');
+
+function render(){
+  totalEl.textContent = items.length;
+  bar.max = items.length;
+
+  items.forEach((it, idx) => {
+    const fs = document.createElement('fieldset');
+    const lg = document.createElement('legend');
+    lg.textContent = (idx+1) + ". " + it.text + (it.reverse ? " (R)" : "");
+    lg.style.fontWeight = "600";
+    fs.appendChild(lg);
+
+    const opts = document.createElement('div');
+    opts.className = "options";
+
+    for(let v=1; v<=6; v++){
+      const id = `q${idx}_${v}`;
+      const input = document.createElement('input');
+      input.type = 'radio';
+      input.name = `q${idx}`;
+      input.id = id;
+      input.value = String(v);
+      input.required = true;
+
+      const label = document.createElement('label');
+      label.className = 'opt';
+      label.setAttribute('for', id);
+      label.innerHTML = `<small>${v}</small><span>${v===1?"SD":v===2?"D":v===3?"SLD":v===4?"SLA":v===5?"A":"SA"}</span>`;
+
+      const wrap = document.createElement('div');
+      wrap.style.position = 'relative';
+      wrap.appendChild(input);
+      wrap.appendChild(label);
+
+      opts.appendChild(wrap);
+    }
+
+    fs.appendChild(opts);
+    form.appendChild(fs);
+  });
+
+  form.addEventListener('change', updateProgress);
+}
+
+function updateProgress(){
+  const answered = new Set([...new FormData(form).keys()]).size;
+  answeredEl.textContent = answered;
+  bar.value = answered;
+  submitBtn.disabled = answered !== items.length;
+  resultBox.hidden = true;
+}
+
+function approxEqual(a,b,eps=0.05){ return Math.abs(a-b) <= eps; }
+
+function interpret(avg){
+  // Mirrors bands shown in your slide (1–2, 2–3, 3–4, 4, 4–5, 5–6, 6).
+  let band = "", desc = "", pillClass = "warn";
+  if(avg <= 2){
+    band = "Not happy (1–2)"; desc = "Your current happiness looks low. Scores can reflect the week you’re having; if this persists, consider seeking support."; pillClass="bad";
+  } else if(avg <= 3){
+    band = "Somewhat unhappy (2–3)"; desc = "Below neutral. You might try small, evidence‑based practices (gratitude, connection, sleep) and track change.";
+    pillClass="warn";
+  } else if(avg < 4){
+    band = "Neutral (3–4)"; desc = "Not especially happy or unhappy. Notice what lifts you and what drags you down over a typical week.";
+    pillClass="warn";
+  } else if(approxEqual(avg,4)){
+    band = "Somewhat / moderately happy (~4)"; desc = "Around the common mid‑range. Keep what works; experiment with small, sustainable tweaks.";
+    pillClass="good";
+  } else if(avg < 5){
+    band = "Rather happy (4–5)"; desc = "Pretty happy overall. Consider strengthening what sustains this (relationships, purpose, routines).";
+    pillClass="good";
+  } else if(avg < 6){
+    band = "Very happy (5–6)"; desc = "Consistently positive. Maintain balance; remember that ups/downs are normal across the term.";
+    pillClass="good";
+  } else { // avg == 6
+    band = "Extremely happy (6)"; desc = "It’s possible to be ‘too happy’ in narrow contexts; keep an eye on balance and longer‑term wellbeing.";
+    pillClass="good";
+  }
+  return { band, desc, pillClass };
+}
+
+function calculate(e){
+  e.preventDefault();
+  const data = new FormData(form);
+  let total = 0;
+  items.forEach((it, i) => {
+    const raw = Number(data.get(`q${i}`));
+    const val = it.reverse ? (7 - raw) : raw; // reverse-score 1↔6, 2↔5, 3↔4
+    total += val;
+  });
+  const avg = total / items.length;
+  const {band, desc, pillClass} = interpret(avg);
+
+  const ts = new Date();
+  const summary = `Happiness Quick Check — Score: ${avg.toFixed(2)}/6 (${band}). ${desc}`;
+  // persist last score locally
+  try {
+    localStorage.setItem("cle9032_happiness_quick", JSON.stringify({avg, total, n:items.length, band, at:ts.toISOString()}));
+  } catch(e){ /* ignore storage errors */ }
+
+  resultBox.innerHTML = `
+    <div class="score">${avg.toFixed(2)} <span class="muted">/ 6</span></div>
+    <div class="band pill ${pillClass}">${band}</div>
+    <p class="desc">${desc}</p>
+    <div class="tools">
+      <button type="button" class="btn-secondary" id="copyBtn">Copy summary</button>
+      <button type="button" class="btn-secondary" id="lastBtn">Show last saved</button>
+    </div>
+    <p class="tiny" style="margin-top:8px">Tip: take a screenshot to save your result.</p>
+  `;
+  resultBox.hidden = false;
+
+  document.getElementById('copyBtn').onclick = async () => {
+    try { await navigator.clipboard.writeText(summary); alert("Copied to clipboard."); }
+    catch(err){ alert("Copy failed — select and copy manually."); }
+  };
+  document.getElementById('lastBtn').onclick = () => {
+    const raw = localStorage.getItem("cle9032_happiness_quick");
+    if(!raw){ alert("No previous result saved on this device."); return; }
+    try{
+      const last = JSON.parse(raw);
+      const when = new Date(last.at).toLocaleString();
+      alert(`Last saved result\nScore: ${Number(last.avg).toFixed(2)}/6 (${last.band})\nWhen: ${when}`);
+    }catch(_){ alert("Could not read previous result."); }
+  };
+  // scroll to result
+  resultBox.scrollIntoView({behavior:"smooth", block:"start"});
+}
+
+function resetAll(){
+  form.reset();
+  resultBox.hidden = true;
+  updateProgress();
+}
+
+render();
+updateProgress();
+
+form.addEventListener('submit', calculate);
+submitBtn.addEventListener('click', (e) => { if(!submitBtn.disabled) form.requestSubmit(); });
+resetBtn.addEventListener('click', resetAll);
+</script>
+</body>
+</html>
