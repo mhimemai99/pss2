@@ -3,15 +3,15 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <title>Happiness Quick Check (CLE9032)</title>
-  <meta name="description" content="A quick 12‑item happiness check for CLE9032 students.">
+  <title>Oxford Happiness Questionnaire — Short (8 items)</title>
+  <meta name="description" content="Official OHQ Short (8 items). Calculates sum (8–48) and average (1–6) with a brief interpretation.">
   <style>
     :root{
       --bg:#0f1115; --card:#151923; --muted:#a9b3c9; --text:#e6e9ef; --accent:#7c9cff; --good:#39d98a; --warn:#ffcc66; --bad:#ff6b6b;
-      --ring: 0 0 0 2px var(--accent) inset;
+      --ring:0 0 0 2px var(--accent) inset;
     }
-    @media (prefers-color-scheme: light){
-      :root{ --bg:#f6f7fb; --card:#ffffff; --muted:#4d5566; --text:#1e2330; --accent:#395dff; --good:#199861; --warn:#b57a00; --bad:#d12f2f;}
+    @media (prefers-color-scheme:light){
+      :root{ --bg:#f6f7fb; --card:#ffffff; --muted:#4d5566; --text:#1e2330; --accent:#395dff; --good:#199861; --warn:#b57a00; --bad:#d12f2f; }
     }
     *{box-sizing:border-box}
     body{
@@ -20,24 +20,25 @@
                  radial-gradient(1000px 600px at -10% 10%, rgba(57,93,255,0.12), transparent 55%), var(--bg);
       color:var(--text);
     }
-    .wrap{max-width:840px; margin:auto; padding:24px clamp(16px,4vw,28px) 80px;}
     header{
       position:sticky; top:0; z-index:5; backdrop-filter:saturate(120%) blur(6px);
       background:linear-gradient(180deg, rgba(21,25,35,.95), rgba(21,25,35,.85)), transparent;
       border-bottom:1px solid rgba(124,156,255,.15);
-      padding:.85rem clamp(16px,4vw,28px); margin:0 -1rem 1.25rem; border-radius:0 0 14px 14px;
+      padding:.85rem clamp(16px,4vw,28px); margin:0 0 1.25rem 0;
     }
     @media (prefers-color-scheme:light){
       header{ background:linear-gradient(180deg, rgba(255,255,255,.9), rgba(255,255,255,.75)); border-bottom:1px solid rgba(57,93,255,.15);}
     }
-    h1{font-size:1.25rem; margin:.1rem 0 .35rem 0; letter-spacing:.2px}
-    .sub{font-size:.92rem; color:var(--muted)}
+    .brand{ font-weight:800; letter-spacing:.2px}
+    h1{font-size:1.15rem; margin:.15rem 0 .3rem 0; letter-spacing:.2px}
+    .sub{font-size:.95rem; color:var(--muted)}
+    .wrap{max-width:860px; margin:auto; padding:0 clamp(16px,4vw,28px) 80px}
     .card{
       background:var(--card); border:1px solid rgba(124,156,255,.14); border-radius:14px; padding:18px 16px; margin:16px 0;
       box-shadow:0 10px 30px rgba(0,0,0,.15);
     }
-    .intro{font-size:.98rem; color:var(--muted); margin-top:4px}
-    .scale-legend{display:flex; gap:8px; align-items:center; color:var(--muted); font-size:.9rem; margin:8px 2px}
+    .intro{font-size:.98rem; color:var(--muted)}
+    .scale-legend{display:flex; gap:8px; align-items:center; color:var(--muted); font-size:.9rem; margin:12px 2px 0}
     .legend-pill{border:1px solid rgba(124,156,255,.25); border-radius:999px; padding:6px 10px}
     form{margin:0}
     fieldset{
@@ -70,7 +71,7 @@
     progress::-webkit-progress-value{background:var(--accent); border-radius:999px}
     progress::-moz-progress-bar{background:var(--accent); border-radius:999px}
     .actions{
-      position:sticky; bottom:0; z-index:4; margin:24px -1rem 0; padding:14px clamp(16px,4vw,28px);
+      position:sticky; bottom:0; z-index:4; margin:24px 0 0; padding:14px clamp(16px,4vw,28px);
       background:linear-gradient(180deg, rgba(21,25,35,.02), rgba(21,25,35,.45) 45%, rgba(21,25,35,.85) 85%),
                  linear-gradient(180deg, rgba(0,0,0,0), var(--bg));
       display:flex; gap:10px; border-top:1px solid rgba(124,156,255,.12);
@@ -91,27 +92,25 @@
     .pill{ display:inline-block; border:1px solid rgba(124,156,255,.3); border-radius:999px; padding:4px 10px; font-size:.82rem; margin-right:8px; }
     .bad{ border-color:rgba(255,107,107,.4); color:var(--bad)} .warn{ border-color:rgba(255,204,102,.45); color:var(--warn)} .good{ border-color:rgba(57,217,138,.4); color:var(--good)}
     .tools{ display:flex; gap:8px; margin-top:12px; }
-    .foot{ color:var(--muted); font-size:.82rem; margin:16px 4px 0 }
     .tiny{font-size:.78rem; color:var(--muted)}
-    .brand{ font-weight:800; letter-spacing:.2px}
-    .muted{ color:var(--muted) }
     .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace }
   </style>
 </head>
 <body>
   <header>
     <div class="brand">CLE9032 · Emotional Happiness</div>
-    <h1>Happiness Quick Check</h1>
-    <div class="sub">A 12‑item class activity (1–2 minutes). Tap once per statement.</div>
+    <h1>Oxford Happiness Questionnaire — Short (8 items)</h1>
+    <div class="sub">Answer each statement from <strong>1</strong> (strongly disagree) to <strong>6</strong> (strongly agree).</div>
   </header>
 
   <div class="wrap">
     <section class="card">
-      <div class="intro">
-        Rate each statement from <strong>1 (Strongly disagree)</strong> to <strong>6 (Strongly agree)</strong>.
-        Your score is the <em>average</em> of all items (out of 6).
-        <span class="tiny">This is a brief class check‑in, not a diagnosis.</span>
-      </div>
+      <p class="intro">
+        The official short OHQ has <strong>8 items</strong>. Your official score is the <strong>sum (8–48)</strong>.
+        For easier interpretation in class, we also show the <strong>average (1–6)</strong>.
+        <span class="tiny">This is a brief check‑in, not a diagnosis.</span>
+      </p>
+
       <div class="scale-legend">
         <div class="legend-pill">1 — Strongly disagree</div>
         <div class="legend-pill">3 — Slightly disagree</div>
@@ -119,22 +118,20 @@
         <div class="legend-pill">6 — Strongly agree</div>
       </div>
 
-      <form id="quiz" novalidate></form>
+      <form id="ohq" novalidate></form>
 
-      <div class="progress">
-        <div><span id="answered">0</span>/<span id="total">12</span> answered</div>
-        <progress id="bar" max="12" value="0" aria-label="progress"></progress>
+      <div class="progress" aria-live="polite">
+        <div><span id="answered">0</span>/<span id="total">8</span> answered</div>
+        <progress id="bar" max="8" value="0" aria-label="progress"></progress>
       </div>
     </section>
 
     <section id="result" class="result" hidden aria-live="polite" aria-atomic="true"></section>
 
-    <p class="foot">
-      <span class="mono">Cut‑offs</span> for the brief interpretation follow the OHQ bands you show in your slide
-      “How Happy are You?” (1–2 not happy · 2–3 somewhat unhappy · 3–4 neutral · 4 somewhat/moderately happy ·
-      4–5 rather happy · 5–6 very happy · 6 possibly “too happy”).
+    <p class="tiny">
+      Interpretation bands use the 1–6 average to match classroom materials. Your official OHQ‑Short total (8–48) is also shown.
+      Results stay on your device.
     </p>
-    <p class="tiny">Privacy: results stay on your device. If you tap “Copy summary”, you can paste the score into a form if your instructor asks.</p>
   </div>
 
   <div class="actions">
@@ -143,27 +140,24 @@
   </div>
 
 <script>
-/* CLE9032 Happiness Quick Check
-   — 12 statements; 1–6 scale; some items are reverse-scored (R).
-   — Score = average (out of 6). Interpretation bands mirror the OHQ bands used in class slides.
-   — You may replace the items[] text with the full OHQ later if you have permission.
+/* Oxford Happiness Questionnaire — Short (8 items)
+   Scale: 1=strongly disagree … 6=strongly agree
+   Reverse-scored items: 1, 4, 8. (Not shown in UI)
+   Official score = SUM (8–48). We also show AVERAGE (1–6) to align with class bands.
 */
+
 const items = [
-  { text: "I feel cheerful and in good spirits most days.", reverse:false },
-  { text: "I have warm and trusting relationships.", reverse:false },
-  { text: "I wake up feeling fresh and rested.", reverse:false },
-  { text: "I often feel that life is rewarding.", reverse:false },
-  { text: "I feel that I have a sense of purpose.", reverse:false },
-  { text: "I frequently feel anxious or down without clear reason.", reverse:true },   // (R)
-  { text: "I can laugh and see the funny side of things.", reverse:false },
-  { text: "I am satisfied with how my life is going.", reverse:false },
-  { text: "I feel in control of the way my life is going.", reverse:false },
-  { text: "I have the energy to do what I need to do.", reverse:false },
-  { text: "I often feel isolated from others.", reverse:true },                         // (R)
-  { text: "I tend to dwell on what is going wrong.", reverse:true }                     // (R)
+  { text: "I don\u2019t feel particularly pleased with the way I am.", reverse:true }, // 1
+  { text: "I feel that life is very rewarding.", reverse:false },                   // 2
+  { text: "I am well satisfied about everything in my life.", reverse:false },      // 3
+  { text: "I don\u2019t think I look attractive.", reverse:true },                   // 4
+  { text: "I find beauty in some things.", reverse:false },                         // 5
+  { text: "I can fit in everything I want to.", reverse:false },                    // 6
+  { text: "I feel fully mentally alert.", reverse:false },                          // 7
+  { text: "I do not have particularly happy memories of the past.", reverse:true }  // 8
 ];
 
-const form = document.getElementById('quiz');
+const form = document.getElementById('ohq');
 const totalEl = document.getElementById('total');
 const answeredEl = document.getElementById('answered');
 const bar = document.getElementById('bar');
@@ -178,8 +172,7 @@ function render(){
   items.forEach((it, idx) => {
     const fs = document.createElement('fieldset');
     const lg = document.createElement('legend');
-    lg.textContent = (idx+1) + ". " + it.text + (it.reverse ? " (R)" : "");
-    lg.style.fontWeight = "600";
+    lg.textContent = (idx+1) + ". " + it.text;
     fs.appendChild(lg);
 
     const opts = document.createElement('div');
@@ -197,13 +190,12 @@ function render(){
       const label = document.createElement('label');
       label.className = 'opt';
       label.setAttribute('for', id);
-      label.innerHTML = `<small>${v}</small><span>${v===1?"SD":v===2?"D":v===3?"SLD":v===4?"SLA":v===5?"A":"SA"}</span>`;
+      label.innerHTML = `<small>${v}</small><span>${v===1?"SD":v===2?"MD":v===3?"SLD":v===4?"SLA":v===5?"MA":"SA"}</span>`;
 
       const wrap = document.createElement('div');
       wrap.style.position = 'relative';
       wrap.appendChild(input);
       wrap.appendChild(label);
-
       opts.appendChild(wrap);
     }
 
@@ -211,7 +203,10 @@ function render(){
     form.appendChild(fs);
   });
 
-  form.addEventListener('change', updateProgress);
+  form.addEventListener('change', () => {
+    updateProgress();
+    if (bar.value === items.length) calculate(); // auto-display when complete
+  });
 }
 
 function updateProgress(){
@@ -219,66 +214,57 @@ function updateProgress(){
   answeredEl.textContent = answered;
   bar.value = answered;
   submitBtn.disabled = answered !== items.length;
-  resultBox.hidden = true;
+  if(answered !== items.length){ resultBox.hidden = true; }
 }
 
 function approxEqual(a,b,eps=0.05){ return Math.abs(a-b) <= eps; }
 
 function interpret(avg){
-  // Mirrors bands shown in your slide (1–2, 2–3, 3–4, 4, 4–5, 5–6, 6).
-  let band = "", desc = "", pillClass = "warn";
+  // Matches the bands used in class slides (1–2, 2–3, 3–4, ~4, 4–5, 5–6, ~6).
+  let band="", desc="", pillClass="warn";
   if(avg <= 2){
-    band = "Not happy (1–2)"; desc = "Your current happiness looks low. Scores can reflect the week you’re having; if this persists, consider seeking support."; pillClass="bad";
+    band="Not happy (1–2)"; desc="Your current happiness looks low. Scores can reflect your week; if this persists, consider support."; pillClass="bad";
   } else if(avg <= 3){
-    band = "Somewhat unhappy (2–3)"; desc = "Below neutral. You might try small, evidence‑based practices (gratitude, connection, sleep) and track change.";
-    pillClass="warn";
+    band="Somewhat unhappy (2–3)"; desc="Below neutral. Try small, evidence‑based habits and track change."; pillClass="warn";
   } else if(avg < 4){
-    band = "Neutral (3–4)"; desc = "Not especially happy or unhappy. Notice what lifts you and what drags you down over a typical week.";
-    pillClass="warn";
+    band="Neutral (3–4)"; desc="Not especially happy or unhappy. Notice what lifts or lowers your mood across a week."; pillClass="warn";
   } else if(approxEqual(avg,4)){
-    band = "Somewhat / moderately happy (~4)"; desc = "Around the common mid‑range. Keep what works; experiment with small, sustainable tweaks.";
-    pillClass="good";
+    band="Somewhat / moderately happy (~4)"; desc="Around the common mid‑range. Keep what works; add small, sustainable tweaks."; pillClass="good";
   } else if(avg < 5){
-    band = "Rather happy (4–5)"; desc = "Pretty happy overall. Consider strengthening what sustains this (relationships, purpose, routines).";
-    pillClass="good";
+    band="Rather happy (4–5)"; desc="Pretty happy overall. Strengthen what sustains this (relationships, purpose, routines)."; pillClass="good";
   } else if(avg < 6){
-    band = "Very happy (5–6)"; desc = "Consistently positive. Maintain balance; remember that ups/downs are normal across the term.";
-    pillClass="good";
-  } else { // avg == 6
-    band = "Extremely happy (6)"; desc = "It’s possible to be ‘too happy’ in narrow contexts; keep an eye on balance and longer‑term wellbeing.";
-    pillClass="good";
+    band="Very happy (5–6)"; desc="Consistently positive. Maintain balance; normal ups/downs will still happen."; pillClass="good";
+  } else {
+    band="Extremely happy (6)"; desc="Maximal scores are uncommon. Aim for balanced, sustainable wellbeing over ‘max at all times’."; pillClass="good";
   }
-  return { band, desc, pillClass };
+  return {band, desc, pillClass};
 }
 
 function calculate(e){
-  e.preventDefault();
+  if(e) e.preventDefault();
   const data = new FormData(form);
-  let total = 0;
+  let sum = 0;
   items.forEach((it, i) => {
     const raw = Number(data.get(`q${i}`));
     const val = it.reverse ? (7 - raw) : raw; // reverse-score 1↔6, 2↔5, 3↔4
-    total += val;
+    sum += val;
   });
-  const avg = total / items.length;
+  const avg = sum / items.length;
   const {band, desc, pillClass} = interpret(avg);
 
-  const ts = new Date();
-  const summary = `Happiness Quick Check — Score: ${avg.toFixed(2)}/6 (${band}). ${desc}`;
-  // persist last score locally
-  try {
-    localStorage.setItem("cle9032_happiness_quick", JSON.stringify({avg, total, n:items.length, band, at:ts.toISOString()}));
-  } catch(e){ /* ignore storage errors */ }
+  const summary = `OHQ‑Short: Total ${sum}/48, Average ${avg.toFixed(2)}/6 — ${band}. ${desc}`;
+  try { localStorage.setItem("cle9032_ohq8", JSON.stringify({sum, avg, band, at: new Date().toISOString()})); } catch(_){}
 
   resultBox.innerHTML = `
-    <div class="score">${avg.toFixed(2)} <span class="muted">/ 6</span></div>
-    <div class="band pill ${pillClass}">${band}</div>
+    <div class="score">${sum} <span class="mono muted">/ 48</span></div>
+    <div class="pill ${pillClass}">Avg: ${avg.toFixed(2)} / 6</div>
+    <div class="band">${band}</div>
     <p class="desc">${desc}</p>
     <div class="tools">
       <button type="button" class="btn-secondary" id="copyBtn">Copy summary</button>
       <button type="button" class="btn-secondary" id="lastBtn">Show last saved</button>
     </div>
-    <p class="tiny" style="margin-top:8px">Tip: take a screenshot to save your result.</p>
+    <p class="tiny" style="margin-top:8px">Tip: screenshot to save your result.</p>
   `;
   resultBox.hidden = false;
 
@@ -287,22 +273,19 @@ function calculate(e){
     catch(err){ alert("Copy failed — select and copy manually."); }
   };
   document.getElementById('lastBtn').onclick = () => {
-    const raw = localStorage.getItem("cle9032_happiness_quick");
+    const raw = localStorage.getItem("cle9032_ohq8");
     if(!raw){ alert("No previous result saved on this device."); return; }
     try{
       const last = JSON.parse(raw);
       const when = new Date(last.at).toLocaleString();
-      alert(`Last saved result\nScore: ${Number(last.avg).toFixed(2)}/6 (${last.band})\nWhen: ${when}`);
+      alert(`Last saved result\nTotal: ${last.sum}/48\nAverage: ${Number(last.avg).toFixed(2)}/6 (${last.band})\nWhen: ${when}`);
     }catch(_){ alert("Could not read previous result."); }
   };
-  // scroll to result
   resultBox.scrollIntoView({behavior:"smooth", block:"start"});
 }
 
 function resetAll(){
-  form.reset();
-  resultBox.hidden = true;
-  updateProgress();
+  form.reset(); updateProgress(); resultBox.hidden = true;
 }
 
 render();
@@ -314,4 +297,3 @@ resetBtn.addEventListener('click', resetAll);
 </script>
 </body>
 </html>
-
