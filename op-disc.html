@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OSPP DISC Assessment Test</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #007bff;
+            --text-color: #333;
+            --bg-color: #f4f7f9;
+            --container-bg: #ffffff;
+            --border-color: #ddd;
+            /* DISC Colors */
+            --D-color: #e74c3c; /* Dominance - Red */
+            --I-color: #f39c12; /* Influence - Yellow/Orange */
+            --S-color: #2ecc71; /* Steadiness - Green */
+            --C-color: #3498db; /* Conscientiousness - Blue */
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: var(--container-bg);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 20px;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            font-size: 28px;
+        }
+
+        h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: var(--text-color);
+        }
+
+        p {
+            margin-bottom: 15px;
+        }
+
+        .instructions {
+            background-color: #e9f5ff;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 30px;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        /* Questionnaire Styling */
+        .question {
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        /* Remove border from the last question block */
+        .question:last-of-type {
+            border-bottom: none;
+        }
+
+        .question-text {
+            font-weight: 600;
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+
+        .likert-scale {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .likert-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            flex: 1;
+            text-align: center;
+        }
+
+        .likert-label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 8px;
+            height: 16px; /* Ensure consistent height even if label is empty */
+        }
+
+        /* Custom Radio Button Styling */
+        input[type="radio"] {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 24px;
+            height: 24px;
+            border: 2px solid var(--border-color);
+            border-radius: 50%;
+            transition: border-color 0.3s, background-color 0.3s;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        input[type="radio"]:hover {
+            border-color: var(--primary-color);
+        }
+
+        input[type="radio"]:checked {
+            border-color: var(--primary-color);
+            background-color: var(--primary-color);
+        }
+
+        input[type="radio"]:checked::before {
+            content: '';
+            display: block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: white;
+        }
+
+        .submit-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 30px;
+            transition: background-color 0.3s;
+        }
+
+        .submit-btn:hover {
+            background-color: #0056b3;
+        }
+
+        /* Results Styling */
+        #results {
+            display: none;
+        }
+
+        .score-summary {
+            margin-bottom: 30px;
+        }
+
+        .highest-score-message {
+            font-size: 20px;
+            font-weight: 700;
+            padding: 15px;
+            border-radius: 5px;
+            background-color: #e9ffed;
+            border: 1px solid #2ecc71;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .chart {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .bar-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .bar-label {
+            width: 25px;
+            font-weight: 700;
+            text-align: right;
+            margin-right: 15px;
+        }
+
+        .bar-wrapper {
+            flex-grow: 1;
+            background-color: #eee;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .bar {
+            height: 30px;
+            width: 0;
+            transition: width 1s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 10px;
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        /* Type Descriptions */
+        .type-description {
+            border-top: 2px solid var(--border-color);
+            padding-top: 20px;
+        }
+
+        ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        /* Mobile optimization */
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .likert-label {
+                font-size: 11px;
+            }
+             input[type="radio"] {
+                width: 20px;
+                height: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="assessment">
+            <header>
+                <h1>OSPP DISC Assessment Test</h1>
+            </header>
+
+            <div class="instructions">
+                <p>Please respond to the following 16 statements based on how accurately they describe you. Use the 5-point scale provided (1 = Disagree, 5 = Agree).</p>
+            </div>
+
+            <form id="discForm">
+                <button type="submit" class="submit-btn">Get Results</button>
+            </form>
+        </div>
+
+        <div id="results">
+            <header>
+                <h1>Assessment Results</h1>
+            </header>
+
+            <div class="score-summary">
+                <p>These are the results from the OSPP DISC Assessment Test. The calculated scores for each type are shown below.</p>
+                
+                <div class="highest-score-message" id="highestScoreMessage"></div>
+
+                <h2>Score Distribution</h2>
+                <div class="chart">
+                    </div>
+            </div>
+
+            <div class="type-description">
+                <h2>Sample Type Description</h2>
+                <div id="descriptionContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 1. Data Definition (Extracted from the PDF)
+        const questions = [
+            // Type D
+            { q: "I put people under pressure.", type: "D" },
+            { q: "I have a strong need for power.", type: "D" },
+            { q: "I try to outdo others.", type: "D" },
+            { q: "I am always on the look out for ways to make money.", type: "D" },
+            // Type I
+            { q: "I enjoy being part of a loud crowd.", type: "I" },
+            { q: "I want strangers to love me.", type: "I" },
+            { q: "I joke around a lot.", type: "I" },
+            { q: "I make lots of noise.", type: "I" },
+            // Type S
+            { q: "I hesitate to criticize other people's ideas.", type: "S" },
+            { q: "I value cooperation over competition.", type: "S" },
+            { q: "I just want everyone to be equal.", type: "S" },
+            { q: "I seldom toot my own horn.", type: "S" },
+            // Type C
+            { q: "I am emotionally reserved.", type: "C" },
+            { q: "I read the fine print.", type: "C" },
+            { q: "I love order and regularity.", type: "C" },
+            { q: "My first reaction to an idea is to see its flaws.", type: "C" }
+        ];
+
+        const descriptions = {
+            D: {
+                content: `
+                <p>The D personality type is characterized by a strong sense of assertiveness, ambition, and a drive to achieve goals. People with this personality type are often seen as decisive, competitive, and determined. They are focused on outcomes and results, and they are not afraid to take risks or push boundaries in order to accomplish their objectives.</p>
+                <p><strong>Key characteristics of the D personality type include:</strong></p>
+                <ul>
+                    <li><strong>Assertiveness:</strong> D-types are known for their confidence and ability to express their opinions and desires openly. They are comfortable in taking charge of situations and asserting their authority when needed.</li>
+                    <li><strong>Goal-oriented:</strong> People with a D personality type are highly focused on achieving their goals and objectives, and they are motivated by tangible results and accomplishments.</li>
+                    <li><strong>Risk-taking:</strong> D-types are more likely to take risks and embrace challenges in order to achieve their objectives. They are not easily deterred by obstacles or setbacks.</li>
+                    <li><strong>Decisiveness:</strong> Those with a D personality type are often decisive and quick to make decisions, even in high-pressure situations. They are comfortable taking responsibility for the outcomes of their choices.</li>
+                    <li><strong>Competitive:</strong> D-types are driven to outperform others and are motivated by a strong desire to succeed. They often view life as a competition and strive to excel in their chosen endeavors.</li>
+                    <li><strong>Task-focused:</strong> People with a D personality type prioritize tasks and results over relationships and emotions. They can be seen as demanding or impatient when dealing with others, as they focus on efficiency and effectiveness.</li>
+                </ul>
+                <p>While the D personality type has many strengths, they can also face challenges when it comes to interpersonal relationships. They may struggle with showing empathy or understanding for others, which can lead to conflict or misunderstandings. Additionally, their relentless pursuit of goals may sometimes cause them to neglect their own well-being or that of others.</p>
+            `,
+                colorVar: '--D-color'
+            },
+            I: {
+                content: `
+                <p>The I personality type is characterized by their sociable, outgoing, and enthusiastic nature. People with this personality type are skilled communicators who can easily connect with others and build relationships. They are often seen as charismatic, persuasive, and optimistic, and they thrive in environments that allow them to interact with others and express their ideas.</p>
+                <p><strong>Key characteristics of the I personality type include:</strong></p>
+                <ul>
+                    <li><strong>Sociability:</strong> I-types are highly social and enjoy engaging with others. They are comfortable in group settings and can easily initiate conversations and make new connections.</li>
+                    <li><strong>Enthusiasm:</strong> People with an I personality type are typically energetic and enthusiastic, bringing a positive and motivating atmosphere to their interactions.</li>
+                    <li><strong>Persuasiveness:</strong> I-types have a natural talent for persuasion and can effectively influence others. They are skilled in presenting their ideas in a compelling and convincing manner.</li>
+                    <li><strong>Optimism:</strong> Individuals with an I personality type tend to have an optimistic outlook on life and focus on the positive aspects of situations. This attitude can be contagious and uplifting for others around them.</li>
+                    <li><strong>Adaptability:</strong> I-types are highly adaptable and can quickly adjust to new situations and environments. They are comfortable with change and often embrace it as an opportunity for growth.</li>
+                    <li><strong>Emotional expression:</strong> People with an I personality type are generally open with their emotions and are skilled at reading the emotions of others. They can use this ability to create strong connections and rapport with people they interact with.</li>
+                </ul>
+                <p>While the I personality type has many strengths, they can also face challenges in certain situations. They may struggle with maintaining focus on tasks or details, as they tend to be more interested in social interactions and big-picture ideas. Additionally, their strong desire to be liked and accepted by others may lead them to avoid confrontation or critical feedback, which can hinder their personal and professional growth.</p>
+            `,
+                colorVar: '--I-color'
+            },
+            S: {
+                content: `
+                <p>The S personality type is characterized by their calm, patient, and supportive nature. People with this personality type are reliable team players who value harmony and stability in their personal and professional lives. They are often seen as empathetic, good listeners, and cooperative, and they thrive in environments that promote collaboration, consistency, and strong interpersonal relationships.</p>
+                <p><strong>Key characteristics of the S personality type include:</strong></p>
+                <ul>
+                    <li><strong>Patience:</strong> S-types are patient individuals who can calmly navigate difficult situations and remain composed under pressure. They are often seen as a steadying force within a team or group.</li>
+                    <li><strong>Supportiveness:</strong> People with an S personality type are naturally supportive and empathetic, making them excellent at providing encouragement and assistance to others in both personal and professional contexts.</li>
+                    <li><strong>Dependability:</strong> Individuals with an S personality type are reliable and consistent in their actions and commitments. They are often seen as trustworthy and can be counted on to follow through with their responsibilities.</li>
+                    <li><strong>Cooperation:</strong> S-types prioritize collaboration and cooperation in their interactions, often seeking to find common ground and shared solutions to problems. They are team players who value the input and perspectives of others.</li>
+                    <li><strong>Stability:</strong> People with an S personality type seek stability and consistency in their lives, preferring familiar routines and environments. They may be resistant to change and can become uncomfortable when faced with sudden disruptions or unexpected challenges.</li>
+                    <li><strong>Active listening:</strong> S-types are skilled listeners who can attentively process and understand the concerns and needs of others. They are often sought out for their empathetic and non-judgmental approach to communication.</li>
+                </ul>
+                <p>While the S personality type has many strengths, they can also face challenges when it comes to assertiveness and adaptability. They may struggle with expressing their own needs or opinions, particularly in situations where conflict may arise. Additionally, their strong desire for stability and consistency can make it difficult for them to adapt to change or embrace new opportunities.</p>
+            `,
+                colorVar: '--S-color'
+            },
+            C: {
+                content: `
+                <p>The C personality type is characterized by their detail-oriented, analytical, and systematic approach to life and work. People with this personality type are highly organized, responsible, and cautious. They are often seen as perfectionists, who prioritize accuracy and quality in their tasks, and they thrive in environments that value structure, rules, and clear expectations.</p>
+                <p><strong>Key characteristics of the C personality type include:</strong></p>
+                <ul>
+                    <li><strong>Detail-oriented:</strong> C-types pay close attention to details and have a strong focus on accuracy and precision. They are diligent in their work and strive to ensure that tasks are completed thoroughly and accurately.</li>
+                    <li><strong>Analytical:</strong> People with a C personality type are skilled at analyzing complex information and identifying patterns or trends. They are logical thinkers who enjoy problem-solving and can often develop innovative solutions to challenges.</li>
+                    <li><strong>Systematic:</strong> Individuals with a C personality type approach tasks in a methodical and organized manner. They are adept at creating and maintaining systems and processes to ensure efficiency and consistency in their work.</li>
+                    <li><strong>Quality-focused:</strong> C-types prioritize quality and excellence in their tasks, often holding themselves and others to high standards. They are driven by a desire to produce accurate, reliable, and high-quality outcomes.</li>
+                    <li><strong>Cautious:</strong> People with a C personality type are typically cautious and deliberate in their decision-making. They carefully consider the potential consequences of their actions and prefer to gather sufficient information before making choices.</li>
+                    <li><strong>Independent:</strong> C-types are self-sufficient and prefer to work independently when possible. They are comfortable with autonomy and can effectively manage their own tasks and responsibilities.</li>
+                </ul>
+                <p>While the C personality type has many strengths, they can also face challenges when it comes to flexibility and interpersonal relationships. They may struggle with adapting to change or embracing new ideas, as they tend to prefer familiar processes and established routines. Additionally, their strong focus on details and perfectionism may hinder their ability to connect with others, as they can come across as overly critical or demanding.</p>
+            `,
+                colorVar: '--C-color'
+            }
+        };
+
+        // 2. Utility Functions
+        // Fisher-Yates Shuffle Algorithm to randomize question order
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // 3. Rendering the Questionnaire
+        function renderQuestions() {
+            const form = document.getElementById('discForm');
+            const shuffledQuestions = shuffleArray([...questions]);
+            const submitButton = form.querySelector('.submit-btn');
+
+            shuffledQuestions.forEach((item, index) => {
+                const questionElement = document.createElement('div');
+                questionElement.classList.add('question');
+                const inputName = `q${index}`;
+
+                let optionsHtml = '';
+                // Labels for the 5-point Likert scale (1=Disagree, 5=Agree)
+                const labels = ["Disagree", "", "Neutral", "", "Agree"];
+                
+                for (let i = 1; i <= 5; i++) {
+                    optionsHtml += `
+                        <label class="likert-option">
+                            <span class="likert-label">${labels[i-1]}</span>
+                            <input type="radio" name="${inputName}" value="${i}" data-type="${item.type}" required>
+                        </label>
+                    `;
+                }
+
+                questionElement.innerHTML = `
+                    <div class="question-text">${index + 1}. ${item.q}</div>
+                    <div class="likert-scale">
+                        ${optionsHtml}
+                    </div>
+                `;
+                // Insert the question before the submit button
+                form.insertBefore(questionElement, submitButton);
+            });
+        }
+
+        // 4. Handling Form Submission and Scoring
+        function handleSubmit(event) {
+            event.preventDefault();
+            const form = event.target;
+
+            // Although 'required' attribute handles validation in modern browsers, this is a fallback alert
+            if (!form.checkValidity()) {
+                alert("Please answer all questions before submitting.");
+                return;
+            }
+
+            let scores = { D: 0, I: 0, S: 0, C: 0 };
+            const inputs = form.querySelectorAll('input[type="radio"]:checked');
+
+            // Calculate scores: Sum the values (1-5) for each type
+            inputs.forEach(input => {
+                const type = input.dataset.type;
+                const value = parseInt(input.value, 10);
+                scores[type] += value;
+            });
+
+            displayResults(scores);
+        }
+
+        // 5. Displaying the Results
+        function displayResults(scores) {
+            // Hide assessment, show results
+            document.getElementById('assessment').style.display = 'none';
+            document.getElementById('results').style.display = 'block';
+
+            // Determine highest score
+            let highestType = 'D';
+            let maxScore = scores.D;
+
+            for (const type in scores) {
+                if (scores[type] > maxScore) {
+                    maxScore = scores[type];
+                    highestType = type;
+                }
+            }
+            // Note: In case of a tie, the first type encountered with the max score is chosen (D>I>S>C priority if all tied).
+
+            // Display highest score message
+            document.getElementById('highestScoreMessage').textContent = `Your highest score was for Type ${highestType}.`;
+
+            // Display description
+            document.getElementById('descriptionContent').innerHTML = descriptions[highestType].content;
+
+            // Render and Animate bars
+            const chart = document.querySelector('.chart');
+            chart.innerHTML = ''; // Clear previous results if any
+
+            // Max possible score is 20 (4 questions * 5 points)
+            const maxPossibleScore = 20;
+
+            for (const type in scores) {
+                const score = scores[type];
+                const percentage = (score / maxPossibleScore) * 100;
+                const colorVar = descriptions[type].colorVar;
+
+                const barHTML = `
+                    <div class="bar-container">
+                        <div class="bar-label" style="color: var(${colorVar});">${type}</div>
+                        <div class="bar-wrapper">
+                            <div class="bar" id="bar-${type}" style="background-color: var(${colorVar});">
+                                ${score}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                chart.innerHTML += barHTML;
+            }
+
+            // Animate bars after rendering
+            setTimeout(() => {
+                for (const type in scores) {
+                    const bar = document.getElementById(`bar-${type}`);
+                    const percentage = (scores[type] / maxPossibleScore) * 100;
+                    bar.style.width = `${percentage}%`;
+                }
+            }, 100); // Small delay ensures elements are visible before transition starts
+
+             window.scrollTo(0, 0);
+        }
+
+        // Initialize the assessment when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            renderQuestions();
+            document.getElementById('discForm').addEventListener('submit', handleSubmit);
+        });
+    </script>
+</body>
+</html>
