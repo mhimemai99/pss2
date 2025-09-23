@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Similarity Task — Classroom Version</title>
+<style>
+  :root{
+    --bg:#ffffff; --ink:#1f2937; --muted:#6b7280;
+    --accent:#0a66c2; --card:#f8fafc; --callout:#eef6ff;
+    --shadow: 0 10px 30px rgba(0,0,0,.08);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font:18px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;color:var(--ink);background:var(--bg)}
+  header{padding:18px 22px;border-bottom:1px solid #e5e7eb;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  header h1{font-size:22px;margin:0;font-weight:800;letter-spacing:.2px}
+  header .sub{color:var(--muted);font-size:16px}
+  main{max-width:1100px;margin:20px auto;padding:0 18px 40px}
+  .panel{background:var(--card);border:1px solid #e5e7eb;border-radius:14px;padding:18px;box-shadow:var(--shadow)}
+  .row{display:grid;gap:18px}
+  .row.cols-3{grid-template-columns: 1fr 1fr 1fr}
+  .row.cols-2{grid-template-columns: 1fr 1fr}
+  .legend{display:flex;justify-content:space-between;gap:12px;color:var(--muted);margin-top:4px}
+  .controls{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+  button{background:var(--accent);color:#fff;border:0;border-radius:10px;padding:12px 16px;font-weight:700;cursor:pointer}
+  button.secondary{background:#1118270d;color:#111827}
+  button:disabled{opacity:.5;cursor:not-allowed}
+  select{padding:10px 12px;border:1px solid #d1d5db;border-radius:10px;font:inherit}
+  .prompt{font-weight:800;margin:0 0 8px}
+  .muted{color:var(--muted)}
+  .progress{font-weight:700;color:var(--muted)}
+  .stimulus{background:#fff;border:1px solid #e5e7eb;border-radius:14px;padding:16px}
+  .choices{display:grid;gap:18px;grid-template-columns: 1fr 1fr}
+  .choice{background:#fff;border:2px solid transparent;border-radius:14px;padding:10px;transition:border-color .2s ease, transform .06s ease;cursor:pointer;user-select:none}
+  .choice:hover{border-color:#bfdbfe; transform: translateY(-1px)}
+  .choice kbd{font-family:ui-monospace,Menlo,Consolas,monospace;background:#11182710;padding:.15rem .45rem;border-radius:.4rem;border:1px solid #11182725;font-size:14px;margin-right:8px}
+  svg{width:100%;height:auto;display:block}
+  .hide{display:none !important}
+  .callout{background:var(--callout);border:1px solid #cfe5ff;border-radius:12px;padding:12px 14px;margin-top:8px}
+  footer{margin-top:22px;color:var(--muted);font-size:14px}
+</style>
+</head>
+<body>
+<header>
+  <h1>Similarity Task</h1>
+  <div class="sub">Which option looks more similar to the standard?</div>
+</header>
+
+<main>
+
+  <!-- Intro: simple, no theory explained -->
+  <section id="intro" class="panel">
+    <p class="prompt">Class setup</p>
+    <div class="row cols-3">
+      <div>
+        <label class="muted">Number of questions</label><br />
+        <select id="qCount">
+          <option>7</option><option selected>8</option><option>9</option><option>10</option>
+        </select>
+      </div>
+      <div>
+        <label class="muted">Randomize order</label><br />
+        <select id="shuffle">
+          <option value="yes" selected>Yes</option>
+          <option value="no">No</option>
+        </select>
+      </div>
+      <div class="controls" style="align-items:flex-end">
+        <button id="startBtn">Start</button>
+        <button id="demoBtn" class="secondary">Single demo</button>
+      </div>
+    </div>
+    <div class="callout">
+      <strong>Instructions:</strong> For each item, a <em>Standard</em> appears on top and two options, <strong>A</strong> and <strong>B</strong>, appear below.  
+      Choose the one that looks more similar to the Standard. Use keys <kbd>A</kbd> or <kbd>B</kbd>.
+    </div>
+  </section>
+
+  <!-- Game -->
+  <section id="game" class="panel hide">
+    <div class="legend">
+      <div class="progress" id="progress">Question 1 / 8</div>
+      <div class="muted">Use <kbd>A</kbd> or <kbd>B</kbd></div>
+    </div>
+
+    <h3 class="prompt">Standard</h3>
+    <div id="standard" class="stimulus"></div>
+
+    <h3 class="prompt" style="margin-top:14px">Which option is more similar to the Standard?</h3>
+    <div class="choices">
+      <div id="choiceA" class="choice" data-choice="A">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">
+          <kbd>A</kbd> <strong>Option A</strong>
+        </div>
+        <div id="Acontent"></div>
+      </div>
+      <div id="choiceB" class="choice" data-choice="B">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">
+          <kbd>B</kbd> <strong>Option B</strong>
+        </div>
+        <div id="Bcontent"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Results / Debrief -->
+  <section id="results" class="panel hide">
+    <p class="prompt">Debrief</p>
+    <div id="summary"></div>
+    <div class="row cols-2" style="margin-top:14px">
+      <button id="restartBtn">Play again</button>
+      <button id="reviewBtn" class="secondary">Review the same items</button>
+    </div>
+    <div class="callout" style="margin-top:12px">
+      <strong>What you just did:</strong> Each item is built from a <em>big shape</em> made of many <em>small shapes</em>.  
+      Picking A tended to match the <em>big</em> (global) shape; picking B tended to match the <em>small</em> (local) elements.  
+      This task reveals a momentary leaning toward big‑picture vs. detail‑focused processing. In positive moods, many people lean big‑picture—consistent with the Broaden‑and‑Build theory used in your lecture. :contentReference[oaicite:0]{index=0}
+    </div>
+  </section>
+
+  <footer>
+    Classroom similarity task (global–local) — no libraries, pure HTML/CSS/JS.
+  </footer>
+</main>
+
+<script>
+/* ========================= Utilities ========================= */
+const $ = sel => document.querySelector(sel);
+const SVG_NS = "http://www.w3.org/2000/svg";
+
+function shuffleArray(arr){
+  for(let i=arr.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+function createSVG(w=340,h=240){
+  const s = document.createElementNS(SVG_NS,'svg');
+  s.setAttribute('viewBox',`0 0 ${w} ${h}`);
+  s.setAttribute('width','100%');
+  s.setAttribute('height','100%');
+  return s;
+}
+function addRotation(el, cx, cy, jitterDeg=8){
+  const angle = (Math.random()*2*jitterDeg) - jitterDeg;
+  el.setAttribute('transform', `rotate(${angle} ${cx} ${cy})`);
+}
+
+/* ========================= Primitive drawers ========================= */
+function drawSquareOfSquares(svg, grid=5, pad=12, gap=4, variant='filled', jitter=false){
+  const w = 340, h = 240;
+  const size = Math.min((w-2*pad-(grid-1)*gap)/grid, (h-2*pad-(grid-1)*gap)/grid);
+  const startX = (w - (grid*size + (grid-1)*gap))/2;
+  const startY = (h - (grid*size + (grid-1)*gap))/2;
+  for(let r=0;r<grid;r++){
+    for(let c=0;c<grid;c++){
+      if(variant==='hollow' && !(r===0||c===0||r===grid-1||c===grid-1)) continue;
+      const x = startX + c*(size+gap);
+      const y = startY + r*(size+gap);
+      const rect = document.createElementNS(SVG_NS,'rect');
+      rect.setAttribute('x',x); rect.setAttribute('y',y);
+      rect.setAttribute('width',size); rect.setAttribute('height',size);
+      rect.setAttribute('fill','#1118270e'); rect.setAttribute('stroke','#111827'); rect.setAttribute('stroke-width','1.2');
+      if(jitter) addRotation(rect, x+size/2, y+size/2, 8);
+      svg.appendChild(rect);
+    }
+  }
+}
+function drawSquareOfTriangles(svg, grid=6, pad=12, gap=6, variant='filled', jitter=false){
+  const w = 340, h = 240;
+  const cell = Math.min((w-2*pad-(grid-1)*gap)/grid, (h-2*pad-(grid-1)*gap)/grid);
+  const startX = (w - (grid*cell + (grid-1)*gap))/2;
+  const startY = (h - (grid*cell + (grid-1)*gap))/2;
+  for(let r=0;r<grid;r++){
+    for(let c=0;c<grid;c++){
+      if(variant==='hollow' && !(r===0||c===0||r===grid-1||c===grid-1)) continue;
+      const x = startX + c*(cell+gap);
+      const y = startY + r*(cell+gap);
+      const t = document.createElementNS(SVG_NS,'polygon');
+      const x1 = x + cell/2, y1 = y;
+      const x2 = x, y2 = y + cell;
+      const x3 = x + cell, y3 = y + cell;
+      t.setAttribute('points', `${x1},${y1} ${x2},${y2} ${x3},${y3}`);
+      t.setAttribute('fill','#1118270e'); t.setAttribute('stroke','#111827'); t.setAttribute('stroke-width','1.2');
+      if(jitter) addRotation(t, x+cell/2, y+cell/2, 8);
+      svg.appendChild(t);
+    }
+  }
+}
+function drawSquareOfCircles(svg, grid=6, pad=12, gap=6, variant='filled'){
+  const w = 340, h = 240;
+  const cell = Math.min((w-2*pad-(grid-1)*gap)/grid, (h-2*pad-(grid-1)*gap)/grid);
+  const startX = (w - (grid*cell + (grid-1)*gap))/2;
+  const startY = (h - (grid*cell + (grid-1)*gap))/2;
+  const r = cell*0.42;
+  for(let rIdx=0;rIdx<grid;rIdx++){
+    for(let c=0;c<grid;c++){
+      if(variant==='hollow' && !(rIdx===0||c===0||rIdx===grid-1||c===grid-1)) continue;
+      const cx = startX + c*(cell+gap) + cell/2;
+      const cy = startY + rIdx*(cell+gap) + cell/2;
+      const circ = document.createElementNS(SVG_NS,'circle');
+      circ.setAttribute('cx',cx); circ.setAttribute('cy',cy); circ.setAttribute('r',r);
+      circ.setAttribute('fill','#1118270e'); circ.setAttribute('stroke','#111827'); circ.setAttribute('stroke-width','1.2');
+      svg.appendChild(circ);
+    }
+  }
+}
+
+function drawTriangleOfTriangles(svg, rows=5, pad=10, gap=2, variant='filled', jitter=false){
+  const w = 340, h = 240;
+  const cellW = Math.min((w-2*pad)/rows, ((h-2*pad)/rows) * (2/Math.sqrt(3)));
+  const cellH = cellW*Math.sqrt(3)/2;
+  for(let r=0;r<rows;r++){
+    const count = r+1;
+    const totalW = count*cellW + (count-1)*gap;
+    const x0 = (w-totalW)/2;
+    const y = pad + r*(cellH+gap);
+    for(let c=0;c<count;c++){
+      const border = (r===rows-1 || c===0 || c===count-1);
+      if(variant==='hollow' && !border) continue;
+      const x = x0 + c*(cellW+gap);
+      const t = document.createElementNS(SVG_NS,'polygon');
+      const x1 = x + cellW/2, y1 = y;
+      const x2 = x, y2 = y + cellH;
+      const x3 = x + cellW, y3 = y + cellH;
+      t.setAttribute('points', `${x1},${y1} ${x2},${y2} ${x3},${y3}`);
+      t.setAttribute('fill','#1118270e'); t.setAttribute('stroke','#111827'); t.setAttribute('stroke-width','1.2');
+      if(jitter) addRotation(t, x+cellW/2, y+cellH/2, 8);
+      svg.appendChild(t);
+    }
+  }
+}
+function drawTriangleOfSquares(svg, rows=5, pad=10, gap=6, variant='filled', jitter=false){
+  const w = 340, h = 240;
+  const cell = Math.min((w-2*pad)/(rows), (h-2*pad)/(rows));
+  for(let r=0;r<rows;r++){
+    const count = r+1;
+    const totalW = count*cell + (count-1)*gap;
+    const x0 = (w-totalW)/2;
+    const y = pad + r*(cell+gap);
+    for(let c=0;c<count;c++){
+      const border = (r===rows-1 || c===0 || c===count-1);
+      if(variant==='hollow' && !border) continue;
+      const x = x0 + c*(cell+gap);
+      const rect = document.createElementNS(SVG_NS,'rect');
+      rect.setAttribute('x',x); rect.setAttribute('y',y);
+      rect.setAttribute('width',cell); rect.setAttribute('height',cell);
+      rect.setAttribute('fill','#1118270e'); rect.setAttribute('stroke','#111827'); rect.setAttribute('stroke-width','1.2');
+      if(jitter) addRotation(rect, x+cell/2, y+cell/2, 8);
+      svg.appendChild(rect);
+    }
+  }
+}
+function drawTriangleOfCircles(svg, rows=5, pad=10, gap=6, variant='filled'){
+  const w = 340, h = 240;
+  const cell = Math.min((w-2*pad)/(rows), (h-2*pad)/(rows));
+  const r = cell*0.42;
+  for(let rIdx=0;rIdx<rows;rIdx++){
+    const count = rIdx+1;
+    const totalW = count*cell + (count-1)*gap;
+    const x0 = (w-totalW)/2;
+    const y = pad + rIdx*(cell+gap);
+    for(let c=0;c<count;c++){
+      const border = (rIdx===rows-1 || c===0 || c===count-1);
+      if(variant==='hollow' && !border) continue;
+      const cx = x0 + c*(cell+gap) + cell/2;
+      const cy = y + cell/2;
+      const circ = document.createElementNS(SVG_NS,'circle');
+      circ.setAttribute('cx',cx); circ.setAttribute('cy',cy); circ.setAttribute('r',r);
+      circ.setAttribute('fill','#1118270e'); circ.setAttribute('stroke','#111827'); circ.setAttribute('stroke-width','1.2');
+      svg.appendChild(circ);
+    }
+  }
+}
+
+/* Diamond (rotated square) — rows expand then contract: 1,3,5,...,3,1 */
+function drawDiamond(svg, local='square', levels=5, pad=14, gap=6, jitter=false){
+  const w = 340, h = 240;
+  const rows = [];
+  for(let i=0;i<levels;i++) rows.push(1 + 2*i);
+  for(let i=levels-2;i>=0;i--) rows.push(1 + 2*i); // mirror
+  // cell width based on widest row
+  const maxCount = rows[rows.length-1];
+  const cell = Math.min((w-2*pad-(maxCount-1)*gap)/maxCount, (h-2*pad-(rows.length-1)*gap)/rows.length);
+  const startY = (h - (rows.length*cell + (rows.length-1)*gap))/2;
+  const r = cell*0.42;
+  rows.forEach((count, rIdx)=>{
+    const totalW = count*cell + (count-1)*gap;
+    const x0 = (w-totalW)/2;
+    const y = startY + rIdx*(cell+gap);
+    for(let c=0;c<count;c++){
+      const cx = x0 + c*(cell+gap) + cell/2;
+      const cy = y + cell/2;
+      if(local==='square'){
+        const rect = document.createElementNS(SVG_NS,'rect');
+        rect.setAttribute('x',cx-cell/2); rect.setAttribute('y',cy-cell/2);
+        rect.setAttribute('width',cell); rect.setAttribute('height',cell);
+        rect.setAttribute('fill','#1118270e'); rect.setAttribute('stroke','#111827'); rect.setAttribute('stroke-width','1.2');
+        if(jitter) addRotation(rect, cx, cy, 8);
+        svg.appendChild(rect);
+      }else if(local==='triangle'){
+        const t = document.createElementNS(SVG_NS,'polygon');
+        const x1 = cx, y1 = cy-cell/2;
+        const x2 = cx-cell/2, y2 = cy+cell/2;
+        const x3 = cx+cell/2, y3 = cy+cell/2;
+        t.setAttribute('points', `${x1},${y1} ${x2},${y2} ${x3},${y3}`);
+        t.setAttribute('fill','#1118270e'); t.setAttribute('stroke','#111827'); t.setAttribute('stroke-width','1.2');
+        if(jitter) addRotation(t, cx, cy, 8);
+        svg.appendChild(t);
+      }else{ // circle
+        const circ = document.createElementNS(SVG_NS,'circle');
+        circ.setAttribute('cx',cx); circ.setAttribute('cy',cy); circ.setAttribute('r',r);
+        circ.setAttribute('fill','#1118270e'); circ.setAttribute('stroke','#111827'); circ.setAttribute('stroke-width','1.2');
+        svg.appendChild(circ);
+      }
+    }
+  });
+}
+
+/* ========================= Render composite ========================= */
+/*
+  params = {
+    global: 'triangle' | 'square' | 'diamond',
+    local: 'triangle' | 'square' | 'circle',
+    style: 'filled' | 'hollow',
+    density: { triRows?, sqGrid?, diamondLevels?, pad?, gap? },
+    jitter: boolean
+  }
+*/
+function renderComposite(container, params){
+  container.innerHTML = '';
+  const svg = createSVG(340,240);
+  const g = params.global, l = params.local, st = params.style || 'filled';
+  const d = params.density || {};
+  const jitter = !!params.jitter;
+
+  if(g==='square'){
+    if(l==='square')   drawSquareOfSquares(svg, d.sqGrid||5, d.pad||12, d.gap||4, st, jitter);
+    if(l==='triangle') drawSquareOfTriangles(svg, d.sqGrid||6, d.pad||12, d.gap||6, st, jitter);
+    if(l==='circle')   drawSquareOfCircles(svg,  d.sqGrid||6, d.pad||12, d.gap||6, st);
+  }else if(g==='triangle'){
+    if(l==='triangle') drawTriangleOfTriangles(svg, d.triRows||5, d.pad||10, d.gap||2, st, jitter);
+    if(l==='square')   drawTriangleOfSquares(svg,   d.triRows||5, d.pad||10, d.gap||6, st, jitter);
+    if(l==='circle')   drawTriangleOfCircles(svg,   d.triRows||5, d.pad||10, d.gap||6, st);
+  }else if(g==='diamond'){
+    drawDiamond(svg, l, d.diamondLevels||5, d.pad||14, d.gap||6, jitter);
+  }
+  container.appendChild(svg);
+}
+
+/* ========================= Item factory ========================= */
+// A = global match (same big shape, different small shapes)
+// B = local match (same small shapes, different big shape)
+function otherLocal(local){
+  const options = ['triangle','square','circle'].filter(x=>x!==local);
+  return options[Math.floor(Math.random()*options.length)];
+}
+function otherGlobal(global){
+  const options = ['triangle','square','diamond'].filter(x=>x!==global);
+  return options[Math.floor(Math.random()*options.length)];
+}
+function makeItem(global, local, style='filled', density={}, jitter=false){
+  return {
+    standard: {global, local, style, density, jitter},
+    A: {global, local: otherLocal(local), style, density, jitter: !jitter, type:'global'},
+    B: {global: otherGlobal(global), local, style, density, jitter: !jitter, type:'local'}
+  };
+}
+
+/* ========================= Varied catalog ========================= */
+const CATALOG = [
+  // Triangles & squares, varied density
+  makeItem('triangle','triangle','filled',{triRows:5, gap:2}, false),
+  makeItem('square','square','filled',{sqGrid:5, gap:4}, true),
+  makeItem('triangle','square','filled',{triRows:6, gap:6}, true),
+  makeItem('square','triangle','filled',{sqGrid:6, gap:6}, false),
+
+  // Hollow (border-only) variants to change the look
+  makeItem('square','square','hollow',{sqGrid:6, gap:6}, false),
+  makeItem('triangle','triangle','hollow',{triRows:6, gap:4}, true),
+
+  // Diamond global shape adds variety (still clearly a “big shape”)
+  makeItem('diamond','square','filled',{diamondLevels:5, gap:6}, false),
+  makeItem('diamond','triangle','filled',{diamondLevels:5, gap:6}, true),
+
+  // Introduce circles as local elements (looks different, still same principle)
+  makeItem('square','circle','filled',{sqGrid:5, gap:6}, false),
+  makeItem('triangle','circle','filled',{triRows:5, gap:6}, false),
+
+  // Denser/sparser patterns to reduce obviousness
+  makeItem('square','triangle','filled',{sqGrid:7, gap:4}, true),
+  makeItem('triangle','square','filled',{triRows:4, gap:6}, false),
+  makeItem('square','square','filled',{sqGrid:4, gap:8}, true),
+  makeItem('triangle','triangle','filled',{triRows:7, gap:2}, true),
+];
+
+/* ========================= Game state ========================= */
+let sequence = [];   // items for this run
+let current = 0;     // index
+let responses = [];  // 'global' or 'local'
+
+function startGame(count, doShuffle){
+  const pool = doShuffle ? shuffleArray([...CATALOG]) : [...CATALOG];
+  sequence = pool.slice(0, count);
+  current = 0; responses = [];
+  $('#intro').classList.add('hide');
+  $('#results').classList.add('hide');
+  $('#game').classList.remove('hide');
+  renderCurrent();
+}
+function renderCurrent(){
+  const item = sequence[current];
+  $('#progress').textContent = `Question ${current+1} / ${sequence.length}`;
+  renderComposite($('#standard'), item.standard);
+  renderComposite($('#Acontent'), item.A);
+  renderComposite($('#Bcontent'), item.B);
+}
+function record(choice){
+  const item = sequence[current];
+  const chosenType = (choice === 'A') ? item.A.type : item.B.type; // 'global' or 'local'
+  responses.push(chosenType);
+  current++;
+  if(current >= sequence.length){ showResults(); } else { renderCurrent(); }
+}
+function showResults(){
+  $('#game').classList.add('hide');
+  $('#results').classList.remove('hide');
+  const globalCount = responses.filter(x=>x==='global').length;
+  const localCount  = responses.filter(x=>x==='local').length;
+  const leaning = globalCount === localCount ? 'Balanced'
+                  : (globalCount > localCount ? 'Big‑picture leaning' : 'Detail‑focused leaning');
+  $('#summary').innerHTML = `
+    <div class="row cols-3">
+      <div class="panel" style="background:#fff">
+        <div class="prompt" style="margin:0">Choices toward big shape (A)</div>
+        <div style="font-size:40px;font-weight:900">${globalCount}</div>
+      </div>
+      <div class="panel" style="background:#fff">
+        <div class="prompt" style="margin:0">Choices toward small parts (B)</div>
+        <div style="font-size:40px;font-weight:900">${localCount}</div>
+      </div>
+      <div class="panel" style="background:#fff">
+        <div class="prompt" style="margin:0">Pattern</div>
+        <div style="font-size:22px;font-weight:800">${leaning}</div>
+        <div class="muted" style="margin-top:4px">Your pattern can shift with context and mood.</div>
+      </div>
+    </div>
+  `;
+}
+
+/* ========================= Events ========================= */
+$('#startBtn').addEventListener('click', ()=>{
+  const count = parseInt($('#qCount').value,10);
+  const doShuffle = $('#shuffle').value === 'yes';
+  startGame(count, doShuffle);
+});
+$('#demoBtn').addEventListener('click', ()=>{
+  sequence = [makeItem('triangle','triangle','filled',{triRows:5, gap:2}, false)];
+  current = 0; responses = [];
+  $('#intro').classList.add('hide'); $('#results').classList.add('hide'); $('#game').classList.remove('hide');
+  renderCurrent();
+});
+$('#restartBtn').addEventListener('click', ()=>{
+  $('#results').classList.add('hide');
+  $('#intro').classList.remove('hide');
+});
+$('#reviewBtn').addEventListener('click', ()=>{
+  current = 0; responses = [];
+  $('#results').classList.add('hide'); $('#game').classList.remove('hide'); renderCurrent();
+});
+$('#choiceA').addEventListener('click', ()=>record('A'));
+$('#choiceB').addEventListener('click', ()=>record('B'));
+window.addEventListener('keydown', (e)=>{
+  if($('#game').classList.contains('hide')) return;
+  if(e.key.toLowerCase() === 'a') record('A');
+  if(e.key.toLowerCase() === 'b') record('B');
+});
+</script>
+</body>
+</html>
