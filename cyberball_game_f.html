@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Connection Research Study</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 800px;
+            width: 100%;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 0.9em;
+        }
+
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus, input[type="password"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 10px;
+            font-size: 18px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .loader {
+            border: 8px solid #f3f3f3;
+            border-top: 8px solid #667eea;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+            margin: 30px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .status-text {
+            color: #666;
+            margin: 20px 0;
+            font-size: 1.1em;
+        }
+
+        .game-area {
+            position: relative;
+            height: 500px;
+            margin: 30px 0;
+        }
+
+        .player {
+            position: absolute;
+            width: 80px;
+            text-align: center;
+        }
+
+        .player-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 32px;
+            margin-bottom: 10px;
+            transition: transform 0.3s;
+        }
+
+        .player-avatar.has-ball {
+            transform: scale(1.2);
+            box-shadow: 0 0 30px rgba(102, 126, 234, 0.6);
+        }
+
+        .player-name {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .player-location {
+            font-size: 0.8em;
+            color: #999;
+        }
+
+        #player1 {
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        #player2 {
+            bottom: 20px;
+            left: 20px;
+        }
+
+        #player3 {
+            bottom: 20px;
+            right: 20px;
+        }
+
+        .ball {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: radial-gradient(circle at 30% 30%, #ff6b6b, #c92a2a);
+            border-radius: 50%;
+            display: none;
+            transition: all 0.5s ease-in-out;
+            z-index: 100;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .ball.active {
+            display: block;
+        }
+
+        .throw-buttons {
+            position: absolute;
+            bottom: 120px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: none;
+            gap: 20px;
+        }
+
+        .throw-buttons.active {
+            display: flex;
+        }
+
+        .throw-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .throw-btn:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+        }
+
+        .quit-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #f44336;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .quit-btn:hover {
+            background: #da190b;
+        }
+
+        .game-info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .round-indicator {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .stats {
+            margin: 20px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+        }
+
+        .debriefing-content {
+            text-align: left;
+            line-height: 1.8;
+            color: #333;
+        }
+
+        .debriefing-content h3 {
+            color: #667eea;
+            margin: 20px 0 10px 0;
+        }
+
+        .debriefing-content p {
+            margin-bottom: 15px;
+        }
+
+        .highlight {
+            background: #fff3cd;
+            padding: 15px;
+            border-left: 4px solid #ffc107;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+
+        .connection-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background: #4CAF50;
+            border-radius: 50%;
+            margin-right: 5px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 600px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            animation: modalSlideIn 0.3s;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9) translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .modal-content h3 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .round-stats {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .round-stat-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            margin: 8px 0;
+            background: white;
+            border-radius: 5px;
+        }
+
+        .comment-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .comment-box strong {
+            color: #1976D2;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 25px;
+        }
+
+        .modal-btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .modal-btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .modal-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .modal-btn-secondary {
+            background: #f44336;
+            color: white;
+        }
+
+        .modal-btn-secondary:hover {
+            background: #da190b;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Login Screen -->
+        <div class="screen active" id="loginScreen">
+            <h1>🧠 Social Connection Study</h1>
+            <p class="subtitle">University Research Project on Online Interaction</p>
+            <div style="margin: 40px 0;">
+                <input type="text" id="loginId" placeholder="Participant ID (any text)" value="DEMO">
+                <input type="password" id="loginPassword" placeholder="Access Code (any text)" value="2024">
+            </div>
+            <button onclick="login()">Enter Study</button>
+            <p style="margin-top: 30px; font-size: 0.85em; color: #999;">
+                Study Protocol: SCP-2024-09<br>
+                IRB Approved | Confidential
+            </p>
+        </div>
+
+        <!-- Matching Screen -->
+        <div class="screen" id="matchingScreen">
+            <h2>🌍 Finding Players Worldwide</h2>
+            <p class="subtitle">Connecting you with participants from around the globe...</p>
+            <div class="loader"></div>
+            <p class="status-text" id="matchingStatus">Initializing connection...</p>
+            <p style="margin-top: 20px; color: #999; font-size: 0.9em;">
+                <span class="connection-indicator"></span> Connected to Research Server
+            </p>
+        </div>
+
+        <!-- Name Input Screen -->
+        <div class="screen" id="nameScreen">
+            <h2>Welcome to the Study</h2>
+            <p class="subtitle">You'll be playing a simple ball-tossing game with two other participants currently online.</p>
+            <div style="margin: 40px 0;">
+                <input type="text" id="playerName" placeholder="Enter your name or nickname" maxlength="15">
+            </div>
+            <button onclick="startGame()">Continue</button>
+            <div class="highlight" style="margin-top: 30px;">
+                <strong>Instructions:</strong><br>
+                When you receive the ball, you can choose which player to throw it to. The goal is to engage in natural interaction with the other participants.
+            </div>
+        </div>
+
+        <!-- Game Screen -->
+        <div class="screen" id="gameScreen">
+            <button class="quit-btn" onclick="confirmQuit()">Quit Game</button>
+            
+            <div class="game-info">
+                <span class="round-indicator" id="roundIndicator">Round 1 of 2</span>
+                <p style="color: #666; margin-top: 10px;">Pass the ball to keep the game going!</p>
+            </div>
+
+            <div class="game-area">
+                <div class="player" id="player1">
+                    <div class="player-avatar" id="avatar1">👤</div>
+                    <div class="player-name" id="name1">Alex</div>
+                    <div class="player-location" id="loc1">🌍 Loading...</div>
+                </div>
+
+                <div class="player" id="player2">
+                    <div class="player-avatar" id="avatar2">🙂</div>
+                    <div class="player-name" id="name2">You</div>
+                    <div class="player-location">📍 Your location</div>
+                </div>
+
+                <div class="player" id="player3">
+                    <div class="player-avatar" id="avatar3">👤</div>
+                    <div class="player-name" id="name3">Jordan</div>
+                    <div class="player-location" id="loc3">🌍 Loading...</div>
+                </div>
+
+                <div class="ball" id="ball"></div>
+
+                <div class="throw-buttons" id="throwButtons">
+                    <button class="throw-btn" onclick="throwBall(1)">
+                        Throw to <span id="throwName1">Player 1</span>
+                    </button>
+                    <button class="throw-btn" onclick="throwBall(3)">
+                        Throw to <span id="throwName3">Player 3</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="stats">
+                <h4 style="margin-bottom: 15px;">Game Statistics</h4>
+                <div class="stat-item">
+                    <span>Total throws:</span>
+                    <span id="totalThrows">0</span>
+                </div>
+                <div class="stat-item">
+                    <span>Throws to you:</span>
+                    <span id="throwsToYou">0</span>
+                </div>
+                <div class="stat-item">
+                    <span>Your throws:</span>
+                    <span id="yourThrows">0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Debriefing Screen -->
+        <div class="screen" id="debriefingScreen">
+            <h2>📋 Study Debriefing</h2>
+            
+            <div class="debriefing-content">
+                <h3>Thank you for participating!</h3>
+                
+                <p>This was not actually a real online game with other participants. The "players" were computer-controlled, and this was a demonstration of a famous psychological paradigm.</p>
+
+                <div class="highlight">
+                    <strong>🎯 The Cyberball Paradigm</strong><br>
+                    You just experienced the <strong>Cyberball</strong> game, developed by Williams & Jarvis (2006). It's one of the most widely used tools in psychology to study social exclusion and ostracism.
+                </div>
+
+                <h3>What Happened?</h3>
+                <p><strong>Round 1:</strong> You experienced inclusion - the ball was passed to you regularly, creating a sense of participation and belonging.</p>
+                
+                <p><strong>Round 2:</strong> You experienced exclusion - the computer players stopped throwing the ball to you. This is the key manipulation used to study the psychological effects of social rejection.</p>
+
+                <h3>Why This Matters for Social Connection</h3>
+                <p>Research shows that even brief experiences of exclusion in this simple game can:</p>
+                <ul style="margin-left: 30px; margin-bottom: 15px;">
+                    <li>Reduce feelings of belonging and self-esteem</li>
+                    <li>Activate the same brain regions as physical pain</li>
+                    <li>Increase negative mood and feelings of rejection</li>
+                    <li>Demonstrate our fundamental need for social connection</li>
+                </ul>
+
+                <h3>The Purpose</h3>
+                <p>This demonstration illustrates how powerful social connection (and disconnection) is for human wellbeing. Even in a simple virtual ball-tossing game with unknown "players," exclusion can feel meaningful.</p>
+
+                <div class="highlight">
+                    <strong>Reflection Question:</strong> Did you notice a difference in how you felt between Round 1 and Round 2? Many participants report feeling confused, rejected, or wondering if they did something wrong during exclusion - even knowing it's just a game!
+                </div>
+
+                <h3>Key Takeaway for Our Course</h3>
+                <p>Social connection is a fundamental human need. Understanding how exclusion affects us helps us appreciate the importance of fostering belonging and inclusion in our lives and communities.</p>
+
+                <p style="margin-top: 30px; color: #999; font-size: 0.9em;">
+                    <strong>Reference:</strong> Williams, K. D., & Jarvis, B. (2006). Cyberball: A program for use in research on interpersonal ostracism and acceptance. Behavior Research Methods, 38(1), 174-180.
+                </p>
+            </div>
+
+            <button onclick="resetGame()" style="margin-top: 30px;">Experience Again</button>
+        </div>
+    </div>
+
+    <!-- Round Transition Modal -->
+    <div class="modal-overlay" id="roundTransitionModal">
+        <div class="modal-content">
+            <h3>🎉 Round 1 Complete!</h3>
+            
+            <div class="round-stats">
+                <h4 style="margin-bottom: 15px; color: #333;">Round 1 Statistics</h4>
+                <div class="round-stat-item">
+                    <span>Total passes:</span>
+                    <span id="r1TotalThrows">0</span>
+                </div>
+                <div class="round-stat-item">
+                    <span>Passes to you:</span>
+                    <span id="r1ThrowsToYou">0</span>
+                </div>
+                <div class="round-stat-item">
+                    <span>Your passes:</span>
+                    <span id="r1YourThrows">0</span>
+                </div>
+                <div class="round-stat-item">
+                    <span>Passes to <span id="r1Player1Name">Player 1</span>:</span>
+                    <span id="r1ThrowsToP1">0</span>
+                </div>
+                <div class="round-stat-item">
+                    <span>Passes to <span id="r1Player3Name">Player 3</span>:</span>
+                    <span id="r1ThrowsToP3">0</span>
+                </div>
+            </div>
+
+            <div class="comment-box">
+                <strong>Research System Feedback:</strong><br>
+                <span id="roundComment"></span>
+            </div>
+
+            <p style="color: #666; margin-top: 20px;">
+                Ready to continue to Round 2?
+            </p>
+
+            <div class="modal-buttons">
+                <button class="modal-btn modal-btn-primary" onclick="continueToRound2()">
+                    Continue to Round 2
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quit Confirmation Modal -->
+    <div class="modal-overlay" id="quitModal">
+        <div class="modal-content">
+            <h3>⚠️ Quit Study?</h3>
+            
+            <p style="color: #666; margin: 20px 0; line-height: 1.6;">
+                Are you sure you want to quit? Your participation data for this session will not be saved if you exit now.
+            </p>
+
+            <div class="modal-buttons">
+                <button class="modal-btn modal-btn-secondary" onclick="quitGame()">
+                    Yes, Quit
+                </button>
+                <button class="modal-btn modal-btn-primary" onclick="closeQuitModal()">
+                    Continue Playing
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Game state
+        let gameState = {
+            currentRound: 1,
+            totalThrows: 0,
+            throwsToPlayer: 0,
+            yourThrows: 0,
+            playerName: '',
+            otherPlayers: [],
+            currentBallHolder: 1,
+            roundThrows: 0,
+            maxThrowsRound1: 15,
+            maxThrowsRound2: 21,
+            throwsToP1: 0,
+            throwsToP3: 0,
+            round1Stats: {
+                totalThrows: 0,
+                throwsToPlayer: 0,
+                yourThrows: 0,
+                throwsToP1: 0,
+                throwsToP3: 0
+            }
+        };
+
+        // Fake names and locations
+        const names = ['Alex', 'Jordan', 'Sam', 'Taylor', 'Morgan', 'Casey', 'Riley', 'Avery', 'Quinn', 'Reese'];
+        const locations = [
+            '🇺🇸 New York', '🇬🇧 London', '🇯🇵 Tokyo', '🇦🇺 Sydney', 
+            '🇨🇦 Toronto', '🇩🇪 Berlin', '🇫🇷 Paris', '🇰🇷 Seoul',
+            '🇧🇷 São Paulo', '🇮🇳 Mumbai', '🇮🇹 Rome', '🇪🇸 Madrid'
+        ];
+
+        function login() {
+            const id = document.getElementById('loginId').value.trim();
+            const password = document.getElementById('loginPassword').value.trim();
+            
+            if (id && password) {
+                showScreen('matchingScreen');
+                simulateMatching();
+            } else {
+                alert('Please enter both Participant ID and Access Code');
+            }
+        }
+
+        function simulateMatching() {
+            const statuses = [
+                'Searching for participants...',
+                'Found 1 participant in Tokyo...',
+                'Found 2 participants online...',
+                'Establishing secure connection...',
+                'Connection established!'
+            ];
+            
+            let index = 0;
+            const interval = setInterval(() => {
+                document.getElementById('matchingStatus').textContent = statuses[index];
+                index++;
+                
+                if (index >= statuses.length) {
+                    clearInterval(interval);
+                    setTimeout(() => showScreen('nameScreen'), 500);
+                }
+            }, 1200);
+        }
+
+        function startGame() {
+            const name = document.getElementById('playerName').value.trim();
+            
+            if (!name) {
+                alert('Please enter your name');
+                return;
+            }
+            
+            gameState.playerName = name;
+            document.getElementById('name2').textContent = name;
+            
+            // Generate random other players
+            const shuffledNames = [...names].sort(() => Math.random() - 0.5);
+            const shuffledLocations = [...locations].sort(() => Math.random() - 0.5);
+            
+            gameState.otherPlayers = [
+                { name: shuffledNames[0], location: shuffledLocations[0] },
+                { name: shuffledNames[1], location: shuffledLocations[1] }
+            ];
+            
+            document.getElementById('name1').textContent = gameState.otherPlayers[0].name;
+            document.getElementById('loc1').textContent = gameState.otherPlayers[0].location;
+            document.getElementById('name3').textContent = gameState.otherPlayers[1].name;
+            document.getElementById('loc3').textContent = gameState.otherPlayers[1].location;
+            
+            document.getElementById('throwName1').textContent = gameState.otherPlayers[0].name;
+            document.getElementById('throwName3').textContent = gameState.otherPlayers[1].name;
+            
+            showScreen('gameScreen');
+            setTimeout(() => startRound(), 1000);
+        }
+
+        function startRound() {
+            gameState.roundThrows = 0;
+            gameState.currentBallHolder = 1;
+            
+            document.getElementById('roundIndicator').textContent = `Round ${gameState.currentRound} of 2`;
+            
+            // Update stats display (will be reset for round 2)
+            updateStats();
+            
+            // Reset avatars
+            document.querySelectorAll('.player-avatar').forEach(el => el.classList.remove('has-ball'));
+            
+            // Player 1 starts with ball
+            document.getElementById('avatar1').classList.add('has-ball');
+            positionBall(1);
+            
+            setTimeout(() => computerThrow(), 1500);
+        }
+
+        function positionBall(playerNum) {
+            const ball = document.getElementById('ball');
+            const avatar = document.getElementById(`avatar${playerNum}`);
+            const rect = avatar.getBoundingClientRect();
+            const container = document.querySelector('.game-area').getBoundingClientRect();
+            
+            ball.style.left = (rect.left - container.left + rect.width / 2 - 20) + 'px';
+            ball.style.top = (rect.top - container.top + rect.height / 2 - 20) + 'px';
+            ball.classList.add('active');
+        }
+
+        function animateBall(from, to, callback) {
+            document.getElementById(`avatar${from}`).classList.remove('has-ball');
+            
+            const ball = document.getElementById('ball');
+            const toAvatar = document.getElementById(`avatar${to}`);
+            const rect = toAvatar.getBoundingClientRect();
+            const container = document.querySelector('.game-area').getBoundingClientRect();
+            
+            ball.style.left = (rect.left - container.left + rect.width / 2 - 20) + 'px';
+            ball.style.top = (rect.top - container.top + rect.height / 2 - 20) + 'px';
+            
+            setTimeout(() => {
+                document.getElementById(`avatar${to}`).classList.add('has-ball');
+                gameState.currentBallHolder = to;
+                updateStats();
+                if (callback) callback();
+            }, 500);
+        }
+
+        function computerThrow() {
+            gameState.roundThrows++;
+            gameState.totalThrows++;
+            
+            const maxThrows = gameState.currentRound === 1 ? gameState.maxThrowsRound1 : gameState.maxThrowsRound2;
+            
+            if (gameState.roundThrows >= maxThrows) {
+                endRound();
+                return;
+            }
+            
+            const from = gameState.currentBallHolder;
+            let to;
+            
+            // Round 1: Inclusion - fairly distribute throws
+            if (gameState.currentRound === 1) {
+                const otherPlayers = [1, 2, 3].filter(p => p !== from);
+                to = otherPlayers[Math.floor(Math.random() * otherPlayers.length)];
+            } 
+            // Round 2: Exclusion - rarely throw to player
+            else {
+                // Only 10% chance to throw to player in round 2
+                if (Math.random() < 0.1) {
+                    to = 2;
+                } else {
+                    to = from === 1 ? 3 : 1;
+                }
+            }
+            
+            if (to === 2) {
+                gameState.throwsToPlayer++;
+            } else if (to === 1) {
+                gameState.throwsToP1++;
+            } else if (to === 3) {
+                gameState.throwsToP3++;
+            }
+            
+            animateBall(from, to, () => {
+                if (to === 2) {
+                    // Player's turn
+                    document.getElementById('throwButtons').classList.add('active');
+                } else {
+                    // Computer continues
+                    setTimeout(() => computerThrow(), 1500);
+                }
+            });
+        }
+
+        function throwBall(toPlayer) {
+            document.getElementById('throwButtons').classList.remove('active');
+            
+            gameState.yourThrows++;
+            gameState.roundThrows++;
+            gameState.totalThrows++;
+            
+            if (toPlayer === 1) {
+                gameState.throwsToP1++;
+            } else if (toPlayer === 3) {
+                gameState.throwsToP3++;
+            }
+            
+            const maxThrows = gameState.currentRound === 1 ? gameState.maxThrowsRound1 : gameState.maxThrowsRound2;
+            
+            if (gameState.roundThrows >= maxThrows) {
+                animateBall(2, toPlayer, () => endRound());
+                return;
+            }
+            
+            animateBall(2, toPlayer, () => {
+                setTimeout(() => computerThrow(), 1500);
+            });
+        }
+
+        function updateStats() {
+            document.getElementById('totalThrows').textContent = gameState.totalThrows;
+            document.getElementById('throwsToYou').textContent = gameState.throwsToPlayer;
+            document.getElementById('yourThrows').textContent = gameState.yourThrows;
+        }
+
+        function endRound() {
+            if (gameState.currentRound === 1) {
+                // Save Round 1 stats
+                gameState.round1Stats = {
+                    totalThrows: gameState.totalThrows,
+                    throwsToPlayer: gameState.throwsToPlayer,
+                    yourThrows: gameState.yourThrows,
+                    throwsToP1: gameState.throwsToP1,
+                    throwsToP3: gameState.throwsToP3
+                };
+                
+                // Show transition modal with stats
+                showRoundTransition();
+            } else {
+                // End game
+                setTimeout(() => {
+                    showScreen('debriefingScreen');
+                }, 1000);
+            }
+        }
+
+        function showRoundTransition() {
+            // Populate stats
+            document.getElementById('r1TotalThrows').textContent = gameState.round1Stats.totalThrows;
+            document.getElementById('r1ThrowsToYou').textContent = gameState.round1Stats.throwsToPlayer;
+            document.getElementById('r1YourThrows').textContent = gameState.round1Stats.yourThrows;
+            document.getElementById('r1ThrowsToP1').textContent = gameState.round1Stats.throwsToP1;
+            document.getElementById('r1ThrowsToP3').textContent = gameState.round1Stats.throwsToP3;
+            
+            // Set player names in stats
+            document.getElementById('r1Player1Name').textContent = gameState.otherPlayers[0].name;
+            document.getElementById('r1Player3Name').textContent = gameState.otherPlayers[1].name;
+            
+            // Generate comment based on throwing behavior
+            let comment = generateRoundComment();
+            document.getElementById('roundComment').textContent = comment;
+            
+            // Show modal
+            document.getElementById('roundTransitionModal').classList.add('active');
+        }
+
+        function generateRoundComment() {
+            const throwDifference = Math.abs(gameState.round1Stats.throwsToP1 - gameState.round1Stats.throwsToP3);
+            
+            if (gameState.round1Stats.yourThrows === 0) {
+                return "We noticed you didn't get many opportunities to pass in this round. Round 2 should provide more interaction opportunities.";
+            } else if (throwDifference <= 1) {
+                return "Great interaction! You distributed your passes evenly between both players, showing balanced social engagement. This helps maintain group cohesion.";
+            } else if (throwDifference === 2) {
+                return "Good participation! Your passing pattern shows active engagement. Consider varying your interaction partners in Round 2 to maximize connection opportunities.";
+            } else {
+                return "We observed your passing preference in this round. Round 2 offers a chance to diversify your interaction patterns and explore different connection dynamics.";
+            }
+        }
+
+        function continueToRound2() {
+            document.getElementById('roundTransitionModal').classList.remove('active');
+            
+            // Move to round 2 - only reset the round throw counter
+            gameState.currentRound = 2;
+            gameState.roundThrows = 0;
+            // Keep cumulative stats (throwsToPlayer, yourThrows, etc.) for display
+            
+            setTimeout(() => {
+                startRound();
+            }, 500);
+        }
+
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function resetGame() {
+            gameState = {
+                currentRound: 1,
+                totalThrows: 0,
+                throwsToPlayer: 0,
+                yourThrows: 0,
+                playerName: '',
+                otherPlayers: [],
+                currentBallHolder: 1,
+                roundThrows: 0,
+                maxThrowsRound1: 15,
+                maxThrowsRound2: 21,
+                throwsToP1: 0,
+                throwsToP3: 0,
+                round1Stats: {
+                    totalThrows: 0,
+                    throwsToPlayer: 0,
+                    yourThrows: 0,
+                    throwsToP1: 0,
+                    throwsToP3: 0
+                }
+            };
+            
+            document.getElementById('loginId').value = 'DEMO';
+            document.getElementById('loginPassword').value = '2024';
+            document.getElementById('playerName').value = '';
+            
+            updateStats();
+            showScreen('loginScreen');
+        }
+
+        function confirmQuit() {
+            document.getElementById('quitModal').classList.add('active');
+        }
+
+        function closeQuitModal() {
+            document.getElementById('quitModal').classList.remove('active');
+        }
+
+        function quitGame() {
+            document.getElementById('quitModal').classList.remove('active');
+            setTimeout(() => {
+                showScreen('debriefingScreen');
+            }, 300);
+        }
+
+        // Initialize
+        updateStats();
+    </script>
+</body>
+</html>
