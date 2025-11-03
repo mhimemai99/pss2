@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sense of Humor Response Questionnaire (SHRQ)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 1.8em;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 20px;
+        }
+        
+        .instructions {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin-bottom: 30px;
+            border-radius: 5px;
+        }
+        
+        .instructions p {
+            margin-bottom: 10px;
+            color: #555;
+        }
+        
+        .scale-legend {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 15px;
+            margin-bottom: 25px;
+            border-radius: 5px;
+            font-size: 0.9em;
+        }
+        
+        .scale-legend strong {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+        }
+        
+        .scale-legend div {
+            margin: 3px 0;
+            color: #555;
+        }
+        
+        .question {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+        }
+        
+        .question-text {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.05em;
+        }
+        
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .option {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .option:hover {
+            background: #e3f2fd;
+            border-color: #667eea;
+        }
+        
+        .option input[type="radio"] {
+            margin-right: 12px;
+            cursor: pointer;
+            width: 20px;
+            height: 20px;
+            accent-color: #667eea;
+        }
+        
+        .option label {
+            cursor: pointer;
+            flex: 1;
+            color: #555;
+        }
+        
+        .button-container {
+            text-align: center;
+            margin-top: 30px;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1em;
+            border-radius: 25px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            transition: transform 0.3s ease;
+            font-weight: 600;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .result {
+            display: none;
+            margin-top: 30px;
+            padding: 25px;
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .result h2 {
+            margin-bottom: 15px;
+            font-size: 1.8em;
+        }
+        
+        .score {
+            font-size: 3em;
+            font-weight: bold;
+            margin: 15px 0;
+        }
+        
+        .interpretation {
+            margin-top: 15px;
+            font-size: 1.1em;
+            line-height: 1.8;
+        }
+        
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            text-align: center;
+            display: none;
+            border: 1px solid #f5c6cb;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 1.5em;
+            }
+            
+            .question {
+                padding: 15px;
+            }
+            
+            button {
+                width: 100%;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Sense of Humor Response Questionnaire</h1>
+        <div class="subtitle">Based on Boyle & Joss-Reid (2004)</div>
+        
+        <div class="instructions">
+            <p><strong>Instructions:</strong></p>
+            <p>For each of the following situations, indicate how much you would typically respond with laughter or amusement by selecting a number from the scale below.</p>
+        </div>
+        
+        <div class="scale-legend">
+            <strong>Response Scale:</strong>
+            <div>1 = I would not find it funny at all</div>
+            <div>2 = I would smile</div>
+            <div>3 = I would chuckle</div>
+            <div>4 = I would laugh moderately</div>
+            <div>5 = I would laugh heartily</div>
+        </div>
+        
+        <form id="humorForm">
+            <div class="question">
+                <div class="question-text">1. If you were telling a funny story to a group of friends and you accidentally messed up the punchline, how likely would you be to laugh at yourself?</div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" id="q1_1" name="q1" value="1" required>
+                        <label for="q1_1">1 - I would not find it funny at all</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="q1_2" name="q1" value="2">
+                        <label for="q1_2">2 - I would smile</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="q1_3" name="q1" value="3">
+                        <label for="q1_3">3 - I would chuckle</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="q1_4" name="q1" value="4">
+                        <label for="q1_4">4 - I would laugh moderately</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="q1_5" name="q1" value="5">
+                        <label for="q1_5">5 - I would laugh heartily</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question">
+                <div class="question-text">2. If you slipped on a banana peel in front of a crowd, how much would you laugh instead of feeling embarrassed?</div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" id="q2_1" name="q2" value="1" required>
+                        <label for="q2_1">1 - I would not find it funny at all</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="q2_2" name="q2" value="2">
+                        <label for="q2_2">2 - I would smile</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="q2_3" name="q2" value="3">
+                        <label for="q2_3">3 - I would chuckle</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="q2_4" name="q2" value="4">
+                        <label for="q2_4">4 - I would laugh moderately</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="q2_5" name="q2" value="5">
+                        <label for="q2_5">5 - I would laugh heartily</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question">
+                <div class="question-text">3. If you were watching a comedy movie alone, how likely would you be to laugh out loud?</div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" id="q3_1" name="q3" value="1" required>
+                        <label for="q3_1">1 - I would not find it funny at all</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="q3_2" name="q3" value="2">
+                        <label for="q3_2">2 - I would smile</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="q3_3" name="q3" value="3">
+                        <label for="q3_3">3 - I would chuckle</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="q3_4" name="q3" value="4">
+                        <label for="q3_4">4 - I would laugh moderately</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="q3_5" name="q3" value="5">
+                        <label for="q3_5">5 - I would laugh heartily</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question">
+                <div class="question-text">4. If a friend made a clever joke at your expense, would you laugh along with them?</div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" id="q4_1" name="q4" value="1" required>
+                        <label for="q4_1">1 - I would not find it funny at all</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="q4_2" name="q4" value="2">
+                        <label for="q4_2">2 - I would smile</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="q4_3" name="q4" value="3">
+                        <label for="q4_3">3 - I would chuckle</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="q4_4" name="q4" value="4">
+                        <label for="q4_4">4 - I would laugh moderately</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="q4_5" name="q4" value="5">
+                        <label for="q4_5">5 - I would laugh heartily</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question">
+                <div class="question-text">5. If you were in a tense situation (e.g., waiting for an important exam result), and someone made a lighthearted joke, how likely would you be to laugh?</div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" id="q5_1" name="q5" value="1" required>
+                        <label for="q5_1">1 - I would not find it funny at all</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="q5_2" name="q5" value="2">
+                        <label for="q5_2">2 - I would smile</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="q5_3" name="q5" value="3">
+                        <label for="q5_3">3 - I would chuckle</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="q5_4" name="q5" value="4">
+                        <label for="q5_4">4 - I would laugh moderately</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="q5_5" name="q5" value="5">
+                        <label for="q5_5">5 - I would laugh heartily</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question">
+                <div class="question-text">6. If you saw a funny sign or an unusual typo in a public place, would you laugh or point it out to others?</div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" id="q6_1" name="q6" value="1" required>
+                        <label for="q6_1">1 - I would not find it funny at all</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="q6_2" name="q6" value="2">
+                        <label for="q6_2">2 - I would smile</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="q6_3" name="q6" value="3">
+                        <label for="q6_3">3 - I would chuckle</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="q6_4" name="q6" value="4">
+                        <label for="q6_4">4 - I would laugh moderately</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="q6_5" name="q6" value="5">
+                        <label for="q6_5">5 - I would laugh heartily</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question">
+                <div class="question-text">7. If you were playfully teased by a close friend, how likely would you be to find it funny rather than feeling offended?</div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" id="q7_1" name="q7" value="1" required>
+                        <label for="q7_1">1 - I would not find it funny at all</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="q7_2" name="q7" value="2">
+                        <label for="q7_2">2 - I would smile</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="q7_3" name="q7" value="3">
+                        <label for="q7_3">3 - I would chuckle</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="q7_4" name="q7" value="4">
+                        <label for="q7_4">4 - I would laugh moderately</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="q7_5" name="q7" value="5">
+                        <label for="q7_5">5 - I would laugh heartily</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question">
+                <div class="question-text">8. If something unexpected but harmless happened (e.g., a waiter accidentally bringing you the wrong order in a humorous way), would you laugh about it?</div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" id="q8_1" name="q8" value="1" required>
+                        <label for="q8_1">1 - I would not find it funny at all</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="q8_2" name="q8" value="2">
+                        <label for="q8_2">2 - I would smile</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="q8_3" name="q8" value="3">
+                        <label for="q8_3">3 - I would chuckle</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="q8_4" name="q8" value="4">
+                        <label for="q8_4">4 - I would laugh moderately</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="q8_5" name="q8" value="5">
+                        <label for="q8_5">5 - I would laugh heartily</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="button-container">
+                <button type="submit">Calculate My Score</button>
+            </div>
+        </form>
+
+        <div class="error" id="error">
+            Please answer all questions before calculating your score.
+        </div>
+
+        <div class="result" id="result">
+            <h2>Your Results</h2>
+            <div class="score" id="scoreDisplay"></div>
+            <div class="interpretation" id="interpretation"></div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('humorForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const form = e.target;
+            const formData = new FormData(form);
+            let totalScore = 0;
+            let answeredQuestions = 0;
+            
+            // Calculate total score
+            for (let i = 1; i <= 8; i++) {
+                const answer = formData.get('q' + i);
+                if (answer) {
+                    totalScore += parseInt(answer);
+                    answeredQuestions++;
+                }
+            }
+            
+            // Check if all questions are answered
+            if (answeredQuestions < 8) {
+                document.getElementById('error').style.display = 'block';
+                document.getElementById('result').style.display = 'none';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                return;
+            }
+            
+            // Hide error and show result
+            document.getElementById('error').style.display = 'none';
+            document.getElementById('result').style.display = 'block';
+            document.getElementById('scoreDisplay').textContent = totalScore + ' / 40';
+            
+            // Provide interpretation
+            let interpretation = '';
+            if (totalScore >= 34) {
+                interpretation = '🌟 <strong>Very High Sense of Humor</strong><br>You have an exceptional ability to find humor and laugh in various situations. You readily laugh heartily and find joy even in unexpected or potentially embarrassing moments. This strong sense of humor is associated with positive psychological well-being and resilience.';
+            } else if (totalScore >= 28) {
+                interpretation = '😊 <strong>High Sense of Humor</strong><br>You have a well-developed sense of humor and frequently respond to humorous situations with laughter. You generally find it easy to laugh at yourself and enjoy comedy. This indicates good emotional flexibility and social engagement.';
+            } else if (totalScore >= 21) {
+                interpretation = '🙂 <strong>Moderate Sense of Humor</strong><br>You have an average sense of humor. You can appreciate funny situations and laugh when appropriate, though you may not always find humor in challenging circumstances. This is a typical response pattern for most people.';
+            } else if (totalScore >= 14) {
+                interpretation = '😐 <strong>Below Average Sense of Humor</strong><br>You tend to respond to humorous situations with restraint. You may smile rather than laugh, or find fewer situations genuinely amusing. Consider exploring what types of humor resonate with you personally.';
+            } else {
+                interpretation = '🤔 <strong>Low Sense of Humor Response</strong><br>You rarely find situations funny enough to laugh. This may indicate a preference for more serious interactions or difficulty finding humor in everyday situations. Humor appreciation can be developed over time through exposure and practice.';
+            }
+            
+            document.getElementById('interpretation').innerHTML = interpretation;
+            
+            // Scroll to result
+            document.getElementById('result').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        });
+    </script>
+</body>
+</html>
