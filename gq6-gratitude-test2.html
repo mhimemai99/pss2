@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GQ-6 Gratitude Questionnaire</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+        }
+
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .instructions {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 4px solid #667eea;
+        }
+
+        .scale-guide {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+            font-size: 13px;
+        }
+
+        .scale-item {
+            background: white;
+            padding: 8px;
+            border-radius: 6px;
+            text-align: center;
+            border: 1px solid #e0e0e0;
+        }
+
+        .question {
+            background: #f8f9fa;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .question:hover {
+            border-color: #667eea;
+            background: #f0f2ff;
+        }
+
+        .question-text {
+            font-weight: 500;
+            margin-bottom: 15px;
+            font-size: 16px;
+            color: #2d3748;
+        }
+
+        .options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .option {
+            position: relative;
+        }
+
+        .option input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+        }
+
+        .option label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 12px 16px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-width: 60px;
+        }
+
+        .option input[type="radio"]:checked + label {
+            background: #667eea;
+            border-color: #667eea;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .option label:hover {
+            border-color: #667eea;
+            transform: translateY(-1px);
+        }
+
+        .value {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .label-text {
+            font-size: 11px;
+            margin-top: 4px;
+            text-align: center;
+        }
+
+        .calculate-btn {
+            display: block;
+            width: 100%;
+            max-width: 300px;
+            margin: 30px auto;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .calculate-btn:active {
+            transform: translateY(0);
+        }
+
+        .results {
+            display: none;
+            margin-top: 30px;
+            padding: 25px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 8px;
+            border: 2px solid #667eea;
+        }
+
+        .results.show {
+            display: block;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .score-display {
+            text-align: center;
+            font-size: 48px;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+
+        .interpretation {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        .interpretation h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .percentile-info {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f0f2ff;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .error {
+            background: #fff5f5;
+            color: #c53030;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border-left: 4px solid #fc8181;
+            display: none;
+        }
+
+        .error.show {
+            display: block;
+        }
+
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .options {
+                gap: 8px;
+            }
+
+            .option label {
+                padding: 10px 12px;
+                min-width: 50px;
+            }
+
+            .value {
+                font-size: 18px;
+            }
+
+            .label-text {
+                font-size: 10px;
+            }
+
+            .scale-guide {
+                grid-template-columns: 1fr;
+                gap: 5px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+
+            .container {
+                padding: 15px;
+            }
+
+            .option label {
+                padding: 8px 10px;
+                min-width: 45px;
+            }
+
+            .value {
+                font-size: 16px;
+            }
+
+            .label-text {
+                font-size: 9px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>The Gratitude Questionnaire (GQ-6)</h1>
+        <p class="subtitle">Six Item Form</p>
+
+        <div class="instructions">
+            <strong>Instructions:</strong> Using the scale below, indicate how much you agree with each statement by selecting a number from 1 to 7.
+            
+            <div class="scale-guide">
+                <div class="scale-item"><strong>1</strong> - Strongly Disagree</div>
+                <div class="scale-item"><strong>2</strong> - Disagree</div>
+                <div class="scale-item"><strong>3</strong> - Slightly Disagree</div>
+                <div class="scale-item"><strong>4</strong> - Neutral</div>
+                <div class="scale-item"><strong>5</strong> - Slightly Agree</div>
+                <div class="scale-item"><strong>6</strong> - Agree</div>
+                <div class="scale-item"><strong>7</strong> - Strongly Agree</div>
+            </div>
+        </div>
+
+        <form id="gq6Form">
+            <div class="question">
+                <div class="question-text">1. I have so much in life to be thankful for.</div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q1" value="1" id="q1_1">
+                        <label for="q1_1">
+                            <span class="value">1</span>
+                            <span class="label-text">Strongly Disagree</span>
+                        </label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q1" value="2" id="q1_2">
+                        <label for="q1_2">
+                            <span class="value">2</span>
+                            <span class="label-text">Disagree</span>
+                        </label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q1" value="3" id="q1_3">
+                        <label for="q1_3">
+                            <span class="value">3</span>
+                            <span class="label-text">Slightly Disagree</span>
+                        </label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q1" value="4" id="q1_4">
+                        <label for="q1_4">
+                            <span class="value">4</span>
+                            <span class="label-text">Neutral</span>
+                        </label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q1" value="5" id="q1_5">
+                        <label for="q1_5">
+                            <span class="value">5</span>
+                            <span class="label-text">Slightly Agree</span>
+                        </label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q1" value="6" id="q1_6">
+                        <label for="q1_6">
+                            <span class="value">6</span>
+                            <span class="label-text">Agree</span>
+                        </label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q1" value="7" id="q1_7">
+                        <label for="q1_7">
+                            <span class="value">7</span>
+                            <span class="label-text">Strongly Agree</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question">
+                <div class="question-text">2. If I had to list everything that I felt grateful for, it would be a very long list.</div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q2" value="1" id="q2_1">
+                        <label for="q2_1">
+                            <span class="value">1</span>
+                            <span class="label-text">Strongly Disagree</span>
+                        </label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q2" value="2" id="q2_2">
+                        <label for="q2_2">
+                            <span class="value">2</span>
+                            <span class="label-text">Disagree</span>
+                        </label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q2" value="3" id="q2_3">
+                        <label for="q2_3">
+                            <span class="value">3</span>
+                            <span class="label-text">Slightly Disagree</span>
+                        </label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q2" value="4" id="q2_4">
+                        <label for="q2_4">
+                            <span class="value">4</span>
+                            <span class="label-text">Neutral</span>
+                        </label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q2" value="5" id="q2_5">
+                        <label for="q2_5">
+                            <span class="value">5</span>
+                            <span class="label-text">Slightly Agree</span>
+                        </label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q2" value="6" id="q2_6">
+                        <label for="q2_6">
+                            <span class="value">6</span>
+                            <span class="label-text">Agree</span>
+                        </label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q2" value="7" id="q2_7">
+                        <label for="q2_7">
+                            <span class="value">7</span>
+                            <span class="label-text">Strongly Agree</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question">
+                <div class="question-text">3. When I look at the world, I don't see much to be grateful for.</div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q3" value="1" id="q3_1">
+                        <label for="q3_1">
+                            <span class="value">1</span>
+                            <span class="label-text">Strongly Disagree</span>
+                        </label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q3" value="2" id="q3_2">
+                        <label for="q3_2">
+                            <span class="value">2</span>
+                            <span class="label-text">Disagree</span>
+                        </label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q3" value="3" id="q3_3">
+                        <label for="q3_3">
+                            <span class="value">3</span>
+                            <span class="label-text">Slightly Disagree</span>
+                        </label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q3" value="4" id="q3_4">
+                        <label for="q3_4">
+                            <span class="value">4</span>
+                            <span class="label-text">Neutral</span>
+                        </label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q3" value="5" id="q3_5">
+                        <label for="q3_5">
+                            <span class="value">5</span>
+                            <span class="label-text">Slightly Agree</span>
+                        </label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q3" value="6" id="q3_6">
+                        <label for="q3_6">
+                            <span class="value">6</span>
+                            <span class="label-text">Agree</span>
+                        </label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q3" value="7" id="q3_7">
+                        <label for="q3_7">
+                            <span class="value">7</span>
+                            <span class="label-text">Strongly Agree</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question">
+                <div class="question-text">4. I am grateful to a wide variety of people.</div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q4" value="1" id="q4_1">
+                        <label for="q4_1">
+                            <span class="value">1</span>
+                            <span class="label-text">Strongly Disagree</span>
+                        </label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q4" value="2" id="q4_2">
+                        <label for="q4_2">
+                            <span class="value">2</span>
+                            <span class="label-text">Disagree</span>
+                        </label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q4" value="3" id="q4_3">
+                        <label for="q4_3">
+                            <span class="value">3</span>
+                            <span class="label-text">Slightly Disagree</span>
+                        </label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q4" value="4" id="q4_4">
+                        <label for="q4_4">
+                            <span class="value">4</span>
+                            <span class="label-text">Neutral</span>
+                        </label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q4" value="5" id="q4_5">
+                        <label for="q4_5">
+                            <span class="value">5</span>
+                            <span class="label-text">Slightly Agree</span>
+                        </label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q4" value="6" id="q4_6">
+                        <label for="q4_6">
+                            <span class="value">6</span>
+                            <span class="label-text">Agree</span>
+                        </label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q4" value="7" id="q4_7">
+                        <label for="q4_7">
+                            <span class="value">7</span>
+                            <span class="label-text">Strongly Agree</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question">
+                <div class="question-text">5. As I get older I find myself more able to appreciate the people, events, and situations that have been part of my life history.</div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q5" value="1" id="q5_1">
+                        <label for="q5_1">
+                            <span class="value">1</span>
+                            <span class="label-text">Strongly Disagree</span>
+                        </label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q5" value="2" id="q5_2">
+                        <label for="q5_2">
+                            <span class="value">2</span>
+                            <span class="label-text">Disagree</span>
+                        </label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q5" value="3" id="q5_3">
+                        <label for="q5_3">
+                            <span class="value">3</span>
+                            <span class="label-text">Slightly Disagree</span>
+                        </label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q5" value="4" id="q5_4">
+                        <label for="q5_4">
+                            <span class="value">4</span>
+                            <span class="label-text">Neutral</span>
+                        </label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q5" value="5" id="q5_5">
+                        <label for="q5_5">
+                            <span class="value">5</span>
+                            <span class="label-text">Slightly Agree</span>
+                        </label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q5" value="6" id="q5_6">
+                        <label for="q5_6">
+                            <span class="value">6</span>
+                            <span class="label-text">Agree</span>
+                        </label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q5" value="7" id="q5_7">
+                        <label for="q5_7">
+                            <span class="value">7</span>
+                            <span class="label-text">Strongly Agree</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question">
+                <div class="question-text">6. Long amounts of time can go by before I feel grateful to something or someone.</div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q6" value="1" id="q6_1">
+                        <label for="q6_1">
+                            <span class="value">1</span>
+                            <span class="label-text">Strongly Disagree</span>
+                        </label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q6" value="2" id="q6_2">
+                        <label for="q6_2">
+                            <span class="value">2</span>
+                            <span class="label-text">Disagree</span>
+                        </label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q6" value="3" id="q6_3">
+                        <label for="q6_3">
+                            <span class="value">3</span>
+                            <span class="label-text">Slightly Disagree</span>
+                        </label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q6" value="4" id="q6_4">
+                        <label for="q6_4">
+                            <span class="value">4</span>
+                            <span class="label-text">Neutral</span>
+                        </label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q6" value="5" id="q6_5">
+                        <label for="q6_5">
+                            <span class="value">5</span>
+                            <span class="label-text">Slightly Agree</span>
+                        </label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q6" value="6" id="q6_6">
+                        <label for="q6_6">
+                            <span class="value">6</span>
+                            <span class="label-text">Agree</span>
+                        </label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q6" value="7" id="q6_7">
+                        <label for="q6_7">
+                            <span class="value">7</span>
+                            <span class="label-text">Strongly Agree</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <button type="button" class="calculate-btn" onclick="calculateScore()">Calculate My Gratitude Score</button>
+        </form>
+
+        <div id="error" class="error">
+            Please answer all questions before calculating your score.
+        </div>
+
+        <div id="results" class="results">
+            <div class="score-display">
+                Your Score: <span id="scoreValue">0</span>/42
+            </div>
+            
+            <div class="interpretation">
+                <h3>What Your Score Means:</h3>
+                <p id="interpretationText"></p>
+                
+                <div class="percentile-info">
+                    <strong>Score Interpretation:</strong><br>
+                    Your interpretation is based on a more recent study with Asian samples:<br>
+                    • <strong>Mean:</strong> 28.55<br>
+                    • <strong>Standard Deviation:</strong> 5.25<br>
+                    • <strong>Average Range (within 1 SD):</strong> 23-34<br><br>
+                    
+                    <em>Note: The original study reported a median score of 38. Cultural differences in expressing and experiencing gratitude may contribute to score variations across different populations.</em>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p><strong>About the GQ-6:</strong> The Gratitude Questionnaire-Six Item Form measures individual differences in the tendency to experience gratitude in daily life.</p>
+            <p style="margin-top: 10px;">McCullough, M. E., Emmons, R. A., & Tsang, J. (2002). The grateful disposition: A conceptual and empirical topography. <em>Journal of Personality and Social Psychology, 82</em>, 112-127.</p>
+            <p style="margin-top: 10px; font-size: 11px;">This scale is published for use in the public domain for non-commercial research purposes.</p>
+        </div>
+    </div>
+
+    <script>
+        function calculateScore() {
+            // Get all question values
+            const q1 = document.querySelector('input[name="q1"]:checked');
+            const q2 = document.querySelector('input[name="q2"]:checked');
+            const q3 = document.querySelector('input[name="q3"]:checked');
+            const q4 = document.querySelector('input[name="q4"]:checked');
+            const q5 = document.querySelector('input[name="q5"]:checked');
+            const q6 = document.querySelector('input[name="q6"]:checked');
+
+            // Check if all questions are answered
+            if (!q1 || !q2 || !q3 || !q4 || !q5 || !q6) {
+                document.getElementById('error').classList.add('show');
+                document.getElementById('results').classList.remove('show');
+                return;
+            }
+
+            // Hide error message
+            document.getElementById('error').classList.remove('show');
+
+            // Calculate score
+            // Items 1, 2, 4, 5 are scored normally
+            let score = parseInt(q1.value) + parseInt(q2.value) + parseInt(q4.value) + parseInt(q5.value);
+            
+            // Items 3 and 6 are reverse scored (8 - original value)
+            const q3Reversed = 8 - parseInt(q3.value);
+            const q6Reversed = 8 - parseInt(q6.value);
+            
+            score += q3Reversed + q6Reversed;
+
+            // Display score
+            document.getElementById('scoreValue').textContent = score;
+
+            // Provide interpretation based on Asian sample norms
+            // Asian sample: M = 28.55, SD = 5.25 (Chen et al., 2008)
+            const mean = 28.55;
+            const sd = 5.25;
+            const zScore = (score - mean) / sd;
+            
+            let interpretation = '';
+            let sdDescription = '';
+            
+            if (zScore < -2) {
+                sdDescription = "more than 2 standard deviations below the mean";
+                interpretation = `Your score is <strong>${sdDescription}</strong>, which is lower than typical. This suggests you may experience gratitude less frequently than most people. The good news is that gratitude can be cultivated through practice, such as keeping a gratitude journal or regularly reflecting on things you appreciate. Research shows these exercises can meaningfully increase feelings of gratitude over time.`;
+            } else if (zScore < -1) {
+                sdDescription = "between 1-2 standard deviations below the mean";
+                interpretation = `Your score is <strong>${sdDescription}</strong>, which is somewhat lower than average. While you do experience gratitude, there may be room to cultivate this trait further. Consider trying gratitude exercises, such as expressing thanks to others or noting daily moments of appreciation. Research suggests that gratitude is a skill that can be developed with intentional practice.`;
+            } else if (zScore < 0) {
+                sdDescription = "within 1 standard deviation below the mean";
+                interpretation = `Your score is <strong>${sdDescription}</strong>, which is in the average range but slightly below the typical score. You experience gratitude at a level common among many people. Continuing to notice and appreciate positive aspects of your life can help maintain and potentially enhance this trait.`;
+            } else if (zScore < 1) {
+                sdDescription = "within 1 standard deviation above the mean";
+                interpretation = `Your score is <strong>${sdDescription}</strong>, which is in the average to above-average range. You experience gratitude at a healthy level. You likely notice and appreciate positive aspects of your life with regularity. This tendency is associated with positive well-being and life satisfaction.`;
+            } else if (zScore < 2) {
+                sdDescription = "between 1-2 standard deviations above the mean";
+                interpretation = `Excellent! Your score is <strong>${sdDescription}</strong>, which is notably above average. You have a strong tendency to experience gratitude in your daily life. You regularly notice and appreciate the good things around you and the people who contribute to your wellbeing. This trait is associated with numerous psychological and physical health benefits.`;
+            } else {
+                sdDescription = "more than 2 standard deviations above the mean";
+                interpretation = `Outstanding! Your score is <strong>${sdDescription}</strong>, which is exceptionally high. You have a very strong disposition toward gratitude. You consistently recognize and appreciate the positive aspects of your life, the contributions of others, and the beauty in the world around you. Research indicates that people with high gratitude levels tend to experience greater life satisfaction, stronger relationships, and better mental health.`;
+            }
+
+            document.getElementById('interpretationText').innerHTML = interpretation;
+
+            // Show results
+            document.getElementById('results').classList.add('show');
+            
+            // Scroll to results
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        // Optional: Allow Enter key to submit
+        document.getElementById('gq6Form').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                calculateScore();
+            }
+        });
+    </script>
+</body>
+</html>
